@@ -1,4 +1,4 @@
-package com.redhat.sso.ninja;
+package com.redhat.sso.backup;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,20 +11,14 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-public class Heartbeat2 {
-  private static final Logger log = Logger.getLogger(Heartbeat2.class);
+public class Heartbeat {
+  private static final Logger log = Logger.getLogger(Heartbeat.class);
   private static Timer t;
+  private static final Long startupDelay=30000l;
 
   public static void main(String[] asd){
     try{
-//        System.out.println(TimeUnit.DAYS.toMillis(1));
-      
-//      lastRunC.set(Calendar.DAY_OF_MONTH, 21);
-//      System.out.println("TODAY?: "+new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(lastRunC.getTime()));
-      
-      Heartbeat2.runOnce();
-//        Heartbeat.start(60000l);
-//        Thread.sleep(300000l);
+      Heartbeat.runOnce();
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -66,8 +60,8 @@ public class Heartbeat2 {
   }
   
   public static void start(long intervalInMs) {
-    t = new Timer("cop-ninja-heartbeat", false);
-    t.scheduleAtFixedRate(new HeartbeatRunnable(), 30000l, intervalInMs);
+    t = new Timer("backup-heartbeat", false);
+    t.scheduleAtFixedRate(new HeartbeatRunnable(), startupDelay, intervalInMs);
   }
 
   public static void stop() {
@@ -76,12 +70,10 @@ public class Heartbeat2 {
   
 
   static class HeartbeatRunnable extends TimerTask {
-    static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    
     @Override
     public void run() {
       log.info("Heartbeat fired");
-      
+      new Backup().run();
     }      
   }
 

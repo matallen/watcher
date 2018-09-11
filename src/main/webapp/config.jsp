@@ -7,61 +7,9 @@ java.util.Calendar
 
 <script>
 
-function edit2(id){
-  document.getElementById("edit-ok").innerHTML="Update";
-  var xhr = new XMLHttpRequest();
-  var ctx = "${pageContext.request.contextPath}";
-  xhr.open("GET", ctx+"/api/scorecard/get/"+id, true);
-  xhr.send();
-  xhr.onloadend = function () {
-    var json=JSON.parse(xhr.responseText);
-    var form=document.getElementById("myform");
-    for (var i = 0, ii = form.length; i < ii; ++i) {
-      if (typeof json[form[i].name] == "undefined"){
-        form[i].value="";
-      }else{
-        form[i].value=json[form[i].name];
-      }
-    }
-  }
-}
 function copyToClipboard(text) {
   window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
 }
-function deleteItem(id){
-  post("/analytics/delete/"+id);
-}
-function reset(){
-    document.getElementById("edit-ok").innerHTML="Create";
-    
-    var form=document.getElementById("myform");
-    for (var i = 0, ii = form.length; i < ii; ++i) {
-      var input = form[i];
-      input.value="";
-    }
-    document.getElementById("id").value="NEW";
-}
-
-function update(){
-  var data = {};
-  var op="";
-  var form=document.getElementById("myform");
-  for (var i = 0, ii = form.length; i < ii; ++i) {
-    var input = form[i];
-    if (input.name=="id")op=input.value;
-    
-    if (input.name=="tags"){
-      data[input.name] = input.value.split(",");
-    }else if (input.name) {
-      data[input.name] = input.value;
-    }
-  }
-  if (op=="") alert("ERROR: OP is empty!");
-  post("/analytics/update/"+op, data);
-  reset();
-  
-}
-
 function post(uri, data){
   var xhr = new XMLHttpRequest();
   var ctx = "${pageContext.request.contextPath}";
@@ -85,7 +33,7 @@ $(document).ready(function() {
 function load(){
   var xhr = new XMLHttpRequest();
   var ctx = "${pageContext.request.contextPath}";
-  xhr.open("GET", ctx+"/api/config/get", true);
+  xhr.open("GET", ctx+"/api/config", true);
   xhr.send();
   xhr.onloadend = function () {
     var json=JSON.parse(xhr.responseText);
@@ -98,7 +46,7 @@ function save(){
 	var newConfig=document.getElementById("config").value;
 	var payload=JSON.parse(newConfig);
 	var payload2=JSON.stringify(payload);
-	post("/config/save", payload2);
+	post("/config", payload2);
 }
 
 

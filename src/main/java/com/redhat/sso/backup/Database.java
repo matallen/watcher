@@ -1,4 +1,4 @@
-package com.redhat.sso.ninja;
+package com.redhat.sso.backup;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,17 +20,17 @@ import org.codehaus.jackson.map.JsonMappingException;
 import com.redhat.sso.utils.IOUtils2;
 import com.redhat.sso.utils.Json;
 
-public class Database2{
-  private static final Logger log=Logger.getLogger(Database2.class);
-  public static final String STORAGE="target/ninja-persistence/database2.json";
-  public static final File STORAGE_AS_FILE=new File(STORAGE);
+public class Database{
+  private static final Logger log=Logger.getLogger(Database.class);
+//  public static final String STORAGE="target/ninja-persistence/";
+//  public static final File STORAGE_AS_FILE=new File(STORAGE);
+  public static final File STORAGE=new File(Config.STORAGE_ROOT, "database.json");
   public static Integer MAX_EVENT_ENTRIES=10000;
-  
   
   private List<Map<String, String>> events;
   
   public static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-  public static SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+//  public static SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
   
   public List<Map<String, String>> getEvents(){
     if (null==events) events=new ArrayList<Map<String,String>>();
@@ -54,9 +54,9 @@ public class Database2{
   public synchronized void save(){
     try{
       long s=System.currentTimeMillis();
-      if (!new File(STORAGE).getParentFile().exists())
-        new File(STORAGE).getParentFile().mkdirs();
-      IOUtils2.writeAndClose(Json.newObjectMapper(true).writeValueAsBytes(this), new FileOutputStream(new File(STORAGE)));
+      if (!STORAGE.getParentFile().exists())
+      	STORAGE.getParentFile().mkdirs();
+      IOUtils2.writeAndClose(Json.newObjectMapper(true).writeValueAsBytes(this), new FileOutputStream(STORAGE));
       log.info("Database saved ("+(System.currentTimeMillis()-s)+"ms)");
     }catch (JsonGenerationException e){
       e.printStackTrace();
@@ -69,9 +69,9 @@ public class Database2{
     }
   }
   
-  public static synchronized Database2 load(){
+  public static synchronized Database load(){
     try{
-      Database2 db=Json.newObjectMapper(true).readValue(IOUtils2.toStringAndClose(new FileInputStream(new File(STORAGE))), Database2.class);
+      Database db=Json.newObjectMapper(true).readValue(IOUtils2.toStringAndClose(new FileInputStream(STORAGE)), Database.class);
       return db;
     }catch (JsonParseException e){
       e.printStackTrace();
@@ -85,17 +85,17 @@ public class Database2{
     return null;
   }
   
-  private static Database2 instance=null;
-  public static Database2 getCached(){
+  private static Database instance=null;
+  public static Database getCached(){
     if (null==instance){
-      instance=Database2.get();
+      instance=Database.get();
     }
     return instance;
   }
-  public static Database2 get(){
-    if (!new File(STORAGE).exists())
-      new Database2().save();
-    instance=Database2.load();
+  public static Database get(){
+    if (!STORAGE.exists())
+      new Database().save();
+    instance=Database.load();
     return instance;
   }
   

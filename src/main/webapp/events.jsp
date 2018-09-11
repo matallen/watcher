@@ -9,7 +9,7 @@ java.util.Calendar
 <script>
 
 function loadDataTable(){
-	$('#example').DataTable( {
+  $('#example').DataTable( {
         "ajax": {
             "url": '${pageContext.request.contextPath}/api/events/',
             "dataSrc": ""
@@ -20,19 +20,41 @@ function loadDataTable(){
         "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]], // page entry options
         "pageLength" : 5, // default page entries
         "columns": [
-            { "data": "timestamp" },
-            { "data": "type" },
-            { "data": "text" },
-            { "data": "user" }
+	        { "data": "timestamp" },
+	        { "data": "type" },
+	        { "data": "text" },
+//        	{ "data": "user" }
         ],"columnDefs": [
-        		{ "targets": 3, "orderable": true, "render": function (data,type,row){
-        		  return row['user'];
-						}}
-				]
+//          { "targets": 3, "orderable": true, "render": function (data,type,row){
+//            return row['user'];
+//          }},
+          { "targets": 2, "orderable": true, "render": function (data,type,row){
+        	  console.log(urlify2(row['text']));
+        		  return urlify2(row['text']);
+//        	  if (row['text'].includes('https://')){
+//        	  }else{
+//        		  return row['text'];
+//        	  }
+          }}
+        ]
     } );
-    
-    
 }
+
+function urlify(text) {
+   var urlRegex = /(https?:\/\/[^\s]+)/g;
+   return text.replace(urlRegex, function(url) {
+       return '<a href="' + url + '">' + url + '</a>';
+   })
+   // or alternatively
+   // return text.replace(urlRegex, '<a href="$1">$1</a>')
+}
+function urlify2(text) {
+	var urlRegex = /([^\s]+.bak+)/g;
+	return text.replace(urlRegex, function(url) {
+       return '<a href="${pageContext.request.contextPath}/api/download?file=' + url + '">' + url + '</a>';
+   })
+}
+
 
 $(document).ready(function() {
     loadDataTable();
@@ -40,23 +62,23 @@ $(document).ready(function() {
 
 
 </script>
-	
+  
     <%@include file="nav.jsp"%>
     
     <div id="solutions">
-		    <div id="solutions-buttonbar">
-		    </div>
-		    <div id="tableDiv">
-			    <table id="example" class="display" cellspacing="0" width="100%">
-			        <thead>
-			            <tr>
-			                <th align="left">Timestamp</th>
-			                <th align="left">Type</th>
-			                <th align="left"></th>
-			                <th align="left">User</th>
-			            </tr>
-			        </thead>
-			    </table>
-			  </div>
+        <div id="solutions-buttonbar">
+        </div>
+        <div id="tableDiv">
+          <table id="example" class="display" cellspacing="0" width="100%">
+              <thead>
+                  <tr>
+                      <th align="left">Timestamp</th>
+                      <th align="left">Type</th>
+                      <th align="left"></th>
+                      <!--th align="left">User</th-->
+                  </tr>
+              </thead>
+          </table>
+        </div>
     </div>
 

@@ -27,10 +27,11 @@ public class DownloadFile{
   public String get(String remoteLocation, File localDestination, PosixFilePermission... permissions) throws IOException{
     
       log.debug("Provided remote location is: "+remoteLocation);
-      localDestination.mkdirs();
+      localDestination.getParentFile().mkdirs();
       URL sanitizedRemoteLocation=new URL(remoteLocation.contains(" ")?remoteLocation.substring(0, remoteLocation.indexOf(" ")):remoteLocation);
       
-      File dest=new File(localDestination, new File(sanitizedRemoteLocation.getPath()).getName()); // extract just the name, not the path
+//      File dest=new File(localDestination, new File(sanitizedRemoteLocation.getPath()).getName()); // extract just the name, not the path
+      File dest=localDestination;
       
       boolean hasExecutablePermissions=dest.exists() && Files.getPosixFilePermissions(dest.toPath()).contains(PosixFilePermission.GROUP_EXECUTE);
       
@@ -59,9 +60,9 @@ public class DownloadFile{
       }else{
         log.debug("file exists, not downloading: "+dest.getAbsolutePath());
       }
-      String result=dest.getAbsolutePath() + (remoteLocation.contains(" ")?remoteLocation.substring(remoteLocation.indexOf(" ")):"");
-      log.debug("New remote location is: "+result);
-      return result;
+//      String result=dest.getAbsolutePath() + (remoteLocation.contains(" ")?remoteLocation.substring(remoteLocation.indexOf(" ")):"");
+//      log.debug("New remote location is: "+result);
+      return dest.getAbsolutePath();
 //      log.debug("command is now: "+command);
 //    }
   }

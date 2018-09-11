@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-package com.redhat.sso.ninja;
+package com.redhat.sso.backup;
 
 import java.io.IOException;
 

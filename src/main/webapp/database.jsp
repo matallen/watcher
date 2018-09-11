@@ -11,7 +11,7 @@ function save(){
 	var newDb=document.getElementById("database").value;
 	var payload=JSON.parse(newDb);
 	var payload2=JSON.stringify(payload);
-	post("/database/save", payload);
+	post("/database", payload);
 }
 
 function post(uri, data){
@@ -36,7 +36,7 @@ $(document).ready(function() {
 function load(){
   var xhr = new XMLHttpRequest();
   var ctx = "${pageContext.request.contextPath}";
-  xhr.open("GET", ctx+"/api/database/get", true);
+  xhr.open("GET", ctx+"/api/database", true);
   xhr.send();
   xhr.onloadend = function () {
     var json=JSON.parse(xhr.responseText);

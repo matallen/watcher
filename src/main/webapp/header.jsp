@@ -5,7 +5,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
    <meta name="viewport" content="width=device-width, initial-scale=1"/>
    
-   <title>Communities of Practice</title>
+   <title>Backup</title>
    
    <link href="css/jquery.dataTables.min.css" rel="stylesheet">
    <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -14,6 +14,9 @@
    <script src="js/jquery-1.11.3.min.js"></script>
    <script src="js/jquery.dataTables.min.js"></script>
    <script src="js/bootstrap.min.js"></script>
+   
+   <!--
    <script src="js/ChartNew.js"></script>
+   -->
 
 </head>
