@@ -1,0 +1,13 @@
+{
+  "list" : [ {
+    "name" : "ninja",
+    "url" : "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get"
+  } ],
+  "options" : {
+    "intervalInHours" : "24",
+    "format" : "yyyy-MM-dd'T'HHmmss",
+    "maxEvents" : "10000"
+  },
+  "values" : {
+  }
+}
