@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: pathfinder-ui-deployment
+  name: http-backup-deployment
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
@@ -39,8 +39,6 @@ objects:
             value: VnTsjJjY
           - name: JWS_ADMIN_PASSWORD
             value: xfnfyTKW
-          - name: PATHFINDER_SERVER
-            value: ${PATHFINDER_SERVER}
           image: docker-registry.default.svc:5000/${NAMESPACE}/${APPLICATION_NAME}@sha256:e0f4677bc857ed2039efeab172df7d04ec9fb7b5e08bd8c111024b9cf8bf4813
           imagePullPolicy: Always
           name: ${APPLICATION_NAME}
@@ -65,11 +63,18 @@ objects:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /home/jboss/target
+              name: data-backup-storage
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
         terminationGracePeriodSeconds: 60
+        volumes:
+          - name: data-backup-storage
+            persistentVolumeClaim:
+              claimName: data-backup-claim
     test: false
     triggers:
     - imageChangeParams:
@@ -103,7 +108,7 @@ objects:
       xpaas: 1.4.12
     name: ${APPLICATION_NAME}
   spec:
-    path: "/pathfinder-ui" 
+    path: "/http-backup" 
     to:
       kind: Service
       name: ${APPLICATION_NAME}
@@ -132,25 +137,27 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+   name: data-backup-claim
+   annotations:
+     volume.beta.kubernetes.io/storage-class: standard
+  spec:
+   accessModes:
+    - ReadWriteOnce
+   resources:
+     requests:
+       storage: 1Gi
 parameters:
 - description: The name for the application.
   displayName: Application name
   name: APPLICATION_NAME
   required: true
-  value: pathfinder-ui
-- description: The name for the server application.
-  displayName: Server Application name
-  name: SERVER_APPLICATION_NAME
-  required: true
-  value: pathfinder-server
+  value: http-backup
 - description: The namespace for the application.
   displayName: Namespace
   name: NAMESPACE
   required: true
   value: openshift
-- description: The host name for the Pathfinder server
-  displayName: The Host Name of the Pathfinder Server
-  name: PATHFINDER_SERVER
-  required: true
-
 
