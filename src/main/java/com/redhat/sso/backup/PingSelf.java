@@ -1,10 +1,5 @@
 package com.redhat.sso.backup;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,17 +10,14 @@ import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
-//import com.jayway.restassured.response.Response;
 import com.redhat.sso.utils.Http;
 import com.redhat.sso.utils.Http.Response;
 
-//import static io.restassured.RestAssured.given;
-//import static com.jayway.restassured.RestAssured.given;
 
 public class PingSelf{
 	private static final Logger log=Logger.getLogger(PingSelf.class);
 	private static Timer t;
-	private static final Long startupDelay=30000l;
+	public static final Long startupDelay=5000l;
 
 	public static void main(String[] asd){
 		try{
@@ -54,14 +46,14 @@ public class PingSelf{
 			log.info("PingSelf fired");
 
 			String url=System.getenv("PING_URL");
-			
+//			url="http://localhost:8084/backup/version";
 			if (url == null || "".equals(url)) {
 				log.debug("No \"PING_URL\" system property specified, skipping...");
 				return;
 			}
 			
 				Response response=Http.get(url);
-				log.debug("Ping: called '" + url + "', response code was: " + response.responseCode);
+				log.debug("PingSelf: called '" + url + "', response code was: " + response.responseCode);
 				if (200 != response.responseCode){
 					// notification?
 					

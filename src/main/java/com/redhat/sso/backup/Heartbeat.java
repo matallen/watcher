@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 public class Heartbeat {
   private static final Logger log = Logger.getLogger(Heartbeat.class);
   private static Timer t;
-  private static final Long startupDelay=30000l;
+  public static final Long startupDelay=30000l;
 
   public static void main(String[] asd){
     try{
