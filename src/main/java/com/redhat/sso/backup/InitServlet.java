@@ -16,12 +16,14 @@ public class InitServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     Heartbeat.start(TimeUnit.HOURS.toMillis(Long.parseLong(Config.get().getOptions().get("intervalInHours"))));
+    PingSelf.start(TimeUnit.HOURS.toMillis(Long.parseLong(Config.get().getOptions().get("pingIntervalInHours"))));
   }
 
   @Override
   public void destroy() {
     super.destroy();
     Heartbeat.stop();
+    PingSelf.stop();
   }
 
 }

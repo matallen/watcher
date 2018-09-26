@@ -55,10 +55,11 @@ public class PingSelf{
 
 			String url=System.getenv("PING_URL");
 			
-			if (url == null || "".equals(url)) return;
+			if (url == null || "".equals(url)) {
+				log.debug("No \"PING_URL\" system property specified, skipping...");
+				return;
+			}
 			
-//			try{
-				
 				Response response=Http.get(url);
 				log.debug("Ping: called '" + url + "', response code was: " + response.responseCode);
 				if (200 != response.responseCode){
