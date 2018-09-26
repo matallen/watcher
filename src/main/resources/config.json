@@ -1,13 +1,18 @@
 {
-  "list" : [ {
-    "name" : "ninja",
-    "url" : "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get"
-  } ],
-  "options" : {
-    "intervalInHours" : "24",
-    "format" : "yyyy-MM-dd'T'HHmmss",
-    "maxEvents" : "10000"
-  },
-  "values" : {
-  }
+	"list": [
+		{
+			"name": "ninja-db",
+			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get"
+		},
+		{
+			"name": "ninja-config",
+			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/config/get"
+		}
+	],
+	"options": {
+		"intervalInHours": "23",
+		"format": "yyyy-MM-dd'T'HHmmss",
+		"maxEvents": "10000"
+	},
+	"values": {}
 }

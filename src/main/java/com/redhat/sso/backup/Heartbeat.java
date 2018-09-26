@@ -24,36 +24,36 @@ public class Heartbeat {
     }
   }
   
-  public static String convertLastRun(String command, Date lastRunDate) throws ParseException {
-    Matcher m=Pattern.compile("(\\$\\{([^}]+)\\})").matcher(command);
-    StringBuffer sb=new StringBuffer();
-    while (m.find()){
-      String toReplace=m.group(2);
-      if (toReplace.contains("LAST_RUN:")){
-        SimpleDateFormat sdf=new SimpleDateFormat(toReplace.split(":")[1].replaceAll("}", "")); // nasty replaceall when I just want to trim the last char
-        m.appendReplacement(sb, sdf.format(lastRunDate));
-        
-      }else if (toReplace.contains("DAYS_FROM_LAST_RUN")){
-        Date runTo2=java.sql.Date.valueOf(LocalDate.now());
-//        Calendar runTo=Calendar.getInstance();
-//        runTo.setTime(new Date());
-//        runTo.set(Calendar.HOUR, 0);
-//        runTo.set(Calendar.MINUTE, 0);
-//        runTo.set(Calendar.SECOND, 0);
-        Integer daysFromLastRun=(int)((runTo2.getTime() - lastRunDate.getTime()) / (1000 * 60 * 60 * 24))+1;
-        m.appendReplacement(sb, String.valueOf(daysFromLastRun));
-      }else{
-        // is it a system property?
-        if (null!=System.getProperty(toReplace)){
-          m.appendReplacement(sb, System.getProperty(toReplace));
-        }else{
-          m.appendReplacement(sb, "?????");
-        }
-      }
-    }
-    m.appendTail(sb);
-    return sb.toString();
-  }
+//  public static String convertLastRun(String command, Date lastRunDate) throws ParseException {
+//    Matcher m=Pattern.compile("(\\$\\{([^}]+)\\})").matcher(command);
+//    StringBuffer sb=new StringBuffer();
+//    while (m.find()){
+//      String toReplace=m.group(2);
+//      if (toReplace.contains("LAST_RUN:")){
+//        SimpleDateFormat sdf=new SimpleDateFormat(toReplace.split(":")[1].replaceAll("}", "")); // nasty replaceall when I just want to trim the last char
+//        m.appendReplacement(sb, sdf.format(lastRunDate));
+//        
+//      }else if (toReplace.contains("DAYS_FROM_LAST_RUN")){
+//        Date runTo2=java.sql.Date.valueOf(LocalDate.now());
+////        Calendar runTo=Calendar.getInstance();
+////        runTo.setTime(new Date());
+////        runTo.set(Calendar.HOUR, 0);
+////        runTo.set(Calendar.MINUTE, 0);
+////        runTo.set(Calendar.SECOND, 0);
+//        Integer daysFromLastRun=(int)((runTo2.getTime() - lastRunDate.getTime()) / (1000 * 60 * 60 * 24))+1;
+//        m.appendReplacement(sb, String.valueOf(daysFromLastRun));
+//      }else{
+//        // is it a system property?
+//        if (null!=System.getProperty(toReplace)){
+//          m.appendReplacement(sb, System.getProperty(toReplace));
+//        }else{
+//          m.appendReplacement(sb, "?????");
+//        }
+//      }
+//    }
+//    m.appendTail(sb);
+//    return sb.toString();
+//  }
   
   public static void runOnce(){
     new HeartbeatRunnable().run();
