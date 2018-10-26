@@ -20,13 +20,13 @@ public class InitServlet extends HttpServlet {
     super.init(config);
     
     long intervalInHours=Long.parseLong(Config.get().getOptions().get("intervalInHours"));
- 		long pingIntervalInHours=Long.parseLong(Config.get().getOptions().get("pingIntervalInHours"));
+ 		long pingIntervalInMinutes=Long.parseLong(Config.get().getOptions().get("pingIntervalInMinutes"));
     
  		log.debug("Starting Heartbeat with delay ("+Heartbeat.startupDelay+") and interval ("+intervalInHours+")");
- 		log.debug("Starting PingSelf with delay ("+PingSelf.startupDelay+") and interval ("+pingIntervalInHours+")");
+ 		log.debug("Starting PingSelf with delay ("+PingSelf.startupDelay+") and interval ("+pingIntervalInMinutes+"m)");
  		
     Heartbeat.start(TimeUnit.HOURS.toMillis(intervalInHours));
-    PingSelf.start(TimeUnit.HOURS.toMillis(pingIntervalInHours));
+    PingSelf.start(TimeUnit.MINUTES.toMillis(pingIntervalInMinutes));
   }
 
   @Override

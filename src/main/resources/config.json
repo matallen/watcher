@@ -10,7 +10,7 @@
 		}
 	],
 	"options": {
-		"pingIntervalInHours": "1",
+		"pingIntervalInMinutes": "10",
 		"intervalInHours": "23",
 		"format": "yyyy-MM-dd'T'HHmmss",
 		"maxEvents": "10000"
