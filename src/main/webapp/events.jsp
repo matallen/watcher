@@ -19,6 +19,7 @@ function loadDataTable(){
         "paging":         false,
         "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]], // page entry options
         "pageLength" : 5, // default page entries
+        "order" : [[0,"asc"]],
         "columns": [
 	        { "data": "timestamp" },
 	        { "data": "type" },
