@@ -2,6 +2,7 @@ package com.redhat.sso.backup;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -49,12 +50,26 @@ public class ManagementController{
 		newConfig.save();
 
 		// re-start the heartbeat with a new interval
-		String heartbeatInterval=newConfig.getOptions().get("heartbeat.intervalInSeconds");
+		String heartbeatInterval=newConfig.getOptions().get("intervalInHours");
 		if (null != heartbeatInterval && heartbeatInterval.matches("\\d+")){
 			log.info("SaveConfig:: Re-setting heartbeat with interval: " + heartbeatInterval);
 			Heartbeat.stop();
 			Heartbeat.start(Long.parseLong(heartbeatInterval));
 		}
+
+		// re-start the heartbeat with a new interval
+    long pingIntervalInMs=3600l;
+    if (null!=Config.get().getOptions().get("pingIntervalInHours"))
+    	pingIntervalInMs=TimeUnit.HOURS.toMillis(Long.parseLong(Config.get().getOptions().get("pingIntervalInHours")));
+    if (null!=Config.get().getOptions().get("pingIntervalInMinutes"))
+    	pingIntervalInMs=TimeUnit.MINUTES.toMillis(Long.parseLong(Config.get().getOptions().get("pingIntervalInMinutes")));
+    
+//		String pingInterval=newConfig.getOptions().get("pingIntervalInMinutes");
+//		if (null != pingInterval && pingInterval.matches("\\d+")){
+		log.info("SaveConfig:: Re-setting ping with interval: " + pingIntervalInMs +"ms");
+		PingSelf.stop();
+		PingSelf.start(pingIntervalInMs);
+//		}
 
 		String maxEvents=newConfig.getOptions().get("maxEvents");
 		if (null != maxEvents && maxEvents.matches("\\d+")){
