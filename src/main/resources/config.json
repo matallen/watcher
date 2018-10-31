@@ -2,18 +2,24 @@
 	"list": [
 		{
 			"name": "ninja-db",
-			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get"
+			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "10"
 		},
 		{
 			"name": "ninja-config",
-			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/config/get"
+			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/config/get",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "10"
 		}
 	],
 	"options": {
-		"pingIntervalInMinutes": "10",
-		"intervalInHours": "23",
+		"intervalInHours": "23", 
+		"pingIntervalInMinutes": "5",
 		"format": "yyyy-MM-dd'T'HHmmss",
-		"maxEvents": "10000"
+		"maxEvents": "10000",
+		"slack.webhook.template": "payload={\"username\": \"webhookbot\", \"text\": \"Test integration message.\", \"icon_emoji\": \":ghost:\"}",
+		"slack.webhook.url": "https://hooks.slack.com/services/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"
 	},
 	"values": {}
 }
