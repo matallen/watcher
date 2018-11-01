@@ -1,11 +1,10 @@
-<%@page import="
-java.util.Date,
-java.util.Calendar
-"%>
+<%@page %>
 
 <%@include file="header.jsp"%>
-<%@include file="datatables-dependencies.jsp"%>
 
+<style>
+#solutions{margin:auto;width:95%;}
+</style>
 <script>
 
 function loadDataTable(){
@@ -41,14 +40,14 @@ function loadDataTable(){
     } );
 }
 
-function urlify(text) {
-   var urlRegex = /(https?:\/\/[^\s]+)/g;
-   return text.replace(urlRegex, function(url) {
-       return '<a href="' + url + '">' + url + '</a>';
-   })
-   // or alternatively
-   // return text.replace(urlRegex, '<a href="$1">$1</a>')
-}
+//function urlify(text) {
+//   var urlRegex = /(https?:\/\/[^\s]+)/g;
+//   return text.replace(urlRegex, function(url) {
+//       return '<a href="' + url + '">' + url + '</a>';
+//   })
+//   // or alternatively
+//   // return text.replace(urlRegex, '<a href="$1">$1</a>')
+//}
 function urlify2(text) {
 	var urlRegex = /([^\s]+.bak+)/g;
 	return text.replace(urlRegex, function(url) {
@@ -67,19 +66,17 @@ $(document).ready(function() {
     <%@include file="nav.jsp"%>
     
     <div id="solutions">
-        <div id="solutions-buttonbar">
+        <div id="buttonbar">
         </div>
         <div id="tableDiv">
-          <table id="example" class="display" cellspacing="0" width="100%">
+          <table id="example" class="display">
               <thead>
                   <tr>
                       <th align="left">Timestamp</th>
                       <th align="left">Type</th>
                       <th align="left"></th>
-                      <!--th align="left">User</th-->
                   </tr>
               </thead>
           </table>
         </div>
     </div>
-

@@ -23,11 +23,18 @@ public class Backup {
     Config.STORAGE_ROOT.mkdirs();
     
     for(Map<String, Object> destination:Config.get().getList()){
+    	
+    	
+    	//if backup==false dont backup, else do
+    	
+    	
+    	if (null!=destination.get("backup") && ("false".equalsIgnoreCase((String)destination.get("backup")))) continue;
+    	
       String remoteLocation=(String)destination.get("url");
       File source=new File(Config.STORAGE_ROOT, (String)destination.get("name"));
       
       String newName=FilenameUtils.getBaseName(source.getName())+"-"+sdf.format(new Date())+".bak";//+FilenameUtils.getExtension(source.getName());
-      File localDestination=new File(Config.STORAGE_ROOT, newName);
+      File localDestination=new File(source, newName);
       
       try{
         new DownloadFile().get(remoteLocation, localDestination, PosixFilePermission.GROUP_READ);

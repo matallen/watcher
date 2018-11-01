@@ -43,7 +43,7 @@ public class PingSelf{
 	static class PingSelfRunnable extends TimerTask{
 		@Override
 		public void run(){
-			log.info("PingSelf fired");
+//			log.info("PingSelf fired");
 
 			String url=System.getenv("PING_URL");
 //			url="http://localhost:8084/backup/version";

@@ -28,6 +28,7 @@ public class Database{
   public static Integer MAX_EVENT_ENTRIES=10000;
   
   private List<Map<String, String>> events;
+  private Map<String,Map<String, String>> tasks;
   
   public static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 //  public static SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
@@ -35,6 +36,10 @@ public class Database{
   public List<Map<String, String>> getEvents(){
     if (null==events) events=new ArrayList<Map<String,String>>();
     return events;
+  }
+  public Map<String, Map<String, String>> getTasks(){
+    if (null==tasks) tasks=new HashMap<String, Map<String,String>>();
+    return tasks;
   }
   
   public void addEvent(String type, String text){
@@ -57,7 +62,7 @@ public class Database{
       if (!STORAGE.getParentFile().exists())
       	STORAGE.getParentFile().mkdirs();
       IOUtils2.writeAndClose(Json.newObjectMapper(true).writeValueAsBytes(this), new FileOutputStream(STORAGE));
-      log.info("Database saved ("+(System.currentTimeMillis()-s)+"ms)");
+      log.trace("Database saved ("+(System.currentTimeMillis()-s)+"ms)");
     }catch (JsonGenerationException e){
       e.printStackTrace();
     }catch (JsonMappingException e){

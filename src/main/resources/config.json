@@ -4,13 +4,36 @@
 			"name": "ninja-db",
 			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get",
 			"backupIntervalInMinutes": "1440",
-			"pingIntervalInMinutes": "10"
+			"pingIntervalInMinutes": "1",
+			"backup": "true"
 		},
 		{
 			"name": "ninja-config",
 			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/config/get",
 			"backupIntervalInMinutes": "1440",
-			"pingIntervalInMinutes": "10"
+			"pingIntervalInMinutes": "1",
+			"backup": "true"
+		},
+		{
+			"name": "search-widget-version",
+			"url": "https://search-widget-search-widget.6923.rh-us-east-1.openshiftapps.com/search-widget/version",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "1",
+			"backup": "false"
+		},
+		{
+			"name": "old-solution-tracker-version",
+			"url": "http://openjdk-app-solutiontracker.6923.rh-us-east-1.openshiftapps.com/solution-tracker/version",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "1",
+			"backup": "false"
+		},
+		{
+			"name": "doesnt-exist-test",
+			"url": "https://search-widget-search-widget.6923.rh-us-east-1.openshiftapps.com/search-widget/incorrect",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "1",
+			"backup": "false"
 		}
 	],
 	"options": {
@@ -18,7 +41,8 @@
 		"pingIntervalInMinutes": "5",
 		"format": "yyyy-MM-dd'T'HHmmss",
 		"maxEvents": "10000",
-		"slack.webhook.template": "payload={\"username\": \"webhookbot\", \"text\": \"Test integration message.\", \"icon_emoji\": \":ghost:\"}",
+		"slack.webhook.notifications": "false",
+		"slack.webhook.template": "payload={\"username\": \"webhookbot\", \"text\": \"SERVER_NAME is DOWN. Failed URL was SERVER_URL.\", \"icon_emoji\": \":ghost:\"}",
 		"slack.webhook.url": "https://hooks.slack.com/services/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"
 	},
 	"values": {}
