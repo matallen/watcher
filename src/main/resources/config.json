@@ -3,6 +3,8 @@
 		{
 			"name": "ninja-db",
 			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get",
+			"info-sourceUrl": "https://github.com/redhat-cop/ninja-board",
+			"info-hostedUrl": "https://console.d1.casl.rht-labs.com/console/project/community-ninja-board",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
 			"backup": "true"
@@ -10,6 +12,8 @@
 		{
 			"name": "ninja-config",
 			"url": "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/config/get",
+			"info-sourceUrl": "https://github.com/redhat-cop/ninja-board",
+			"info-hostedUrl": "https://console.d1.casl.rht-labs.com/console/project/community-ninja-board",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
 			"backup": "true"
@@ -17,6 +21,7 @@
 		{
 			"name": "search-widget-version",
 			"url": "https://search-widget-search-widget.6923.rh-us-east-1.openshiftapps.com/search-widget/version",
+			"info-sourceUrl": "https://github.com/matallen/search-widget",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
 			"backup": "false"

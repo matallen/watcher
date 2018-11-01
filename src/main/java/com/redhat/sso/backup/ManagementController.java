@@ -65,19 +65,11 @@ public class ManagementController{
 		
 		File taskRootFolder=new File(Config.STORAGE_ROOT, task);
 		
-//		System.out.println("looking in : "+taskRootFolder.getAbsolutePath());
-//		
-//		System.out.println("'"+taskRootFolder.getAbsolutePath()+"'.exists="+taskRootFolder.exists());
-		
+		// response entity structure only
 		class Backup{
-			private String name;
-			private String file;
-			public Backup(String name, String file){
-				this.name=name;
-				this.file=file;
-			}
-			public String getName(){return name;}
-			public String getFile(){return file;}
+			private String name; public String getName(){return name;}
+			private String file; public String getFile(){return file;}
+			public Backup(String name, String file){ this.name=name; this.file=file; }
 		}
 		
 		List<Backup> result=new ArrayList<Backup>();
@@ -94,18 +86,14 @@ public class ManagementController{
 	public Response tasks(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context ServletContext servletContext) throws JsonGenerationException, JsonMappingException, IOException{
 		log.debug("tasks:: Called");
 		
+	  // response entity structure only
 		class Task{
-			private String name;
-			private String status;
-			private String health;
-			public Task(String name, String status, String health){
-				this.name=name;
-				this.status=status;
-				this.health=health;
-			}
-			public String getName(){return name;}
-			public String getStatus(){return status;}
-			public String getHealth(){return health;}
+			private String name;       public String getName(){return name;}
+			private String status;     public String getStatus(){return status;}
+			private String health;     public String getHealth(){return health;}
+			private String sourceUrl; public String getSourceUrl(){return sourceUrl;}
+			private String hostedUrl; public String getHostedUrl(){return hostedUrl;}
+			public Task(String name, String status, String health, String sourceUrl, String hostedUrl){ this.name=name; this.status=status; this.health=health; this.sourceUrl=sourceUrl; this.hostedUrl=hostedUrl; }
 		}
 		List<Task> result=new ArrayList<Task>();
 		
@@ -113,9 +101,9 @@ public class ManagementController{
 		boolean dbUpdated=false;
 		for(Map<String, Object> t:Config.get().getList()){
 			String name=(String)t.get("name");
-			if (Monitor.initTaskIfNecessary(db, name)) dbUpdated=true;
+			dbUpdated=dbUpdated || Monitor.initTaskIfNecessary(db, name);
 			Map<String, String> task=db.getTasks().get(name);
-			result.add(new Task(name, task.get("status"), task.get("health")));
+			result.add(new Task(name, task.get("status"), task.get("health"), (String)t.get("info-sourceUrl"), (String)t.get("info-hostedUrl")));
 		}
 		
 		if (dbUpdated) db.save();
@@ -144,7 +132,6 @@ public class ManagementController{
 		newConfig.save();
 
 		// re-start the heartbeat with a new interval
-//		if (null != heartbeatInterval && heartbeatInterval.matches("\\d+")){
 		if (null!=newConfig.getOptions().get("intervalInHours")){
 			String heartbeatInterval=newConfig.getOptions().get("intervalInHours");
 			log.info("SaveConfig:: Re-setting heartbeat with interval: " + heartbeatInterval+"h");

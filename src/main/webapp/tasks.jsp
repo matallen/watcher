@@ -4,6 +4,7 @@
 
 <script src="js/http.js"></script>
 <link href="css/slide-switch.css" rel="stylesheet">
+<link href="css/popup.css" rel="stylesheet">
 
 <style>
 #tasks{margin:auto;width:95%;}
@@ -21,6 +22,8 @@
 .health-x{background-color: #ddd;}
 /*
 */
+
+.info-img{width:20px;}
 
 </style>
 <script>
@@ -43,23 +46,28 @@ function loadDataTable(){
 	        { "data": "health" },
         ],"columnDefs": [
             { "targets": 0, "orderable": true, "render": function (data,type,row){
-          	  return "<a href='backups.jsp?task="+row['name']+"'>"+row['name']+"</a>";
+            	var info="";
+            	if (null!=row['sourceUrl'] || null!=row['hostedUrl']){
+            	  info="&nbsp;<a href='#' id='myBtn' onclick='showInfo(\""+row['sourceUrl']+"\",\""+row['hostedUrl']+"\");'><img class='info-img' src='images/info2-512.png'/></a>";
+            	}
+            	return "<a href='backups.jsp?task="+row['name']+"'>"+row['name']+"</a>"+info;// <div class='popup' onclick=\"document.getElementById(\'myPopup\').classList.toggle(\'show\')\">???</div>";
             }},
             { "targets": 1, "orderable": true, "render": function (data,type,row){
-          	  var result="";
-          	  if ('X'==row['status']) result="Unknown";
-          	  if ('U'==row['status']) result="Up";
-          	  if ('T'==row['status']) result="Timeout";
-          	  if ('D'==row['status']) result="Down";
-          	  return "<div class='status status-"+row['status'].toLowerCase()+"'>"+result+"</div>";
+          	  var text="";
+          		var x=row['status'].split("|");
+          		var status=x[0],responseCode=x[1];
+          		
+          	  if ('X'==status) text="Unknown";
+          	  if ('U'==status) text="Up";
+          	  if ('T'==status) text="Unavailable";
+          	  if ('D'==status) text="Down";
+          	  return "<div class='status status-"+status.toLowerCase()+"' title='Response code was: "+responseCode+"'>"+text+"</div>";
             }},
           { "targets": 2, "orderable": true, "render": function (data,type,row){
-        	  var result="";
-        	  var i;
-        	  for(i=0;i<row['health'].length;i++){
-        		  result+="<div class='health health-"+row['health'][i].toLowerCase()+"'>&nbsp;</div>";
-        	  }
-        	  return result;
+        	  var healthIndicator="";
+        	  for(i=0;i<row['health'].length;i++)
+        		  healthIndicator+="<div class='health health-"+row['health'][i].toLowerCase()+"'>&nbsp;</div>";
+        	  return healthIndicator;
           }}
         ]
     } );
@@ -75,9 +83,30 @@ $(document).ready(function() {
     });
     // set the initial value from the server-side config
     Http.httpGet("${pageContext.request.contextPath}/api/config/options/slack.webhook.notifications", function(response){
-    	$('#alertsEnabled').prop("checked", response);
+    	$('#alertsEnabled').prop("checked", "true"==response.toLowerCase());
     });
+    // popup info handler
+    var modal = document.getElementById('myModal');
+		document.getElementsByClassName("close")[0].onclick = function() {
+		    modal.style.display = "none";
+		}
+		window.onclick = function(event) {
+		    if (event.target == modal) {
+		        modal.style.display = "none";
+		    }
+		}
 });
+
+function showInfo(source, hosted){
+	document.getElementById("info-sourceUrl").innerHTML="No Info supplied";
+	document.getElementById("info-hostedUrl").innerHTML="No Info supplied";
+	
+	if (source!="null")
+		document.getElementById("info-sourceUrl").innerHTML="<a href='"+source+"'>"+source+"</a>";
+	if (hosted!="null")
+		document.getElementById("info-hostedUrl").innerHTML="<a href='"+hosted+"'>"+hosted+"</a>";
+	document.getElementById("myModal").style.display="block";
+}
 </script>
   
     <%@include file="nav.jsp"%>
@@ -85,6 +114,19 @@ $(document).ready(function() {
     <div id="tasks">
         <div id="buttonbar" style="width:80%;position:relative;top:25px;z-index:1">
         	
+        	<!-- Info box -->
+					<div id="myModal" class="modal">
+				  <div class="modal-content">
+				    <span class="close">&times;</span>
+				    <table style="width:80%">
+				    	<tr><td>Source URL:</td><td><span id='info-sourceUrl'></span></td></tr>
+				    	<tr><td>Hosted URL:</td><td><span id='info-hostedUrl'></span></td></tr>
+				    </table>
+				  </div>
+				
+				</div>
+        	
+        	<!-- alerts toggle switch -->
         	<div style="position:relative; top:0px;">
 						<label class="switch">
 						  <input id="alertsEnabled" type="checkbox">
@@ -96,6 +138,8 @@ $(document).ready(function() {
         	</div>
         	
         </div>
+        
+        <!-- table of tasks -->
         <div id="tableDiv">
           <table id="example" class="display">
               <thead>

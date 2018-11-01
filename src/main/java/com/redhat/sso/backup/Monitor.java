@@ -13,17 +13,11 @@ import com.redhat.sso.utils.Http;
 import com.redhat.sso.utils.MapBuilder;
 import com.redhat.sso.utils.Http.Response;
 
-//import com.redhat.sso.backup.Heartbeat.HeartbeatRunnable;
-
 public class Monitor{
   private static final Logger log = Logger.getLogger(Monitor.class);
   private Timer t;
   private String name;
   private String url;
-  
-//  public static void runOnce(){
-//    new HeartbeatRunnable().run();
-//  }
   
   public Monitor(String name, String url){
   	this.name=name;
@@ -76,22 +70,28 @@ public class Monitor{
 		Map<String, String> data=db.getTasks().get(name);
 		data.put("status", String.valueOf(response.responseCode));
 		
-		boolean error=false;
-		if (200==response.responseCode){
-			data.put("status", "U"); // service is UP
-		}else if (response.responseCode>=500){
-			data.put("status", "T"); // service timeout
+		// make a decision on the response that represents the status
+		String decision="";
+		if (response.responseCode>=200 && response.responseCode<=299){ // Success
+			decision="U";
+		}else if (response.responseCode>=300 && response.responseCode<=399){ // redirections
+			decision="T";
+		}else if (response.responseCode>=400 && response.responseCode<=499){ // errors
+			decision="D";
+		}else if (response.responseCode>=500 && response.responseCode<=599){ // server errors
+			decision="T";
 		}else{
-			data.put("status", "D"); // service is DOWN! alert!!!
-			error=true;
+			decision="U";
 		}
-		data.put("health", data.get("health").substring(1)+data.get("status"));
+		
+		data.put("status", decision+"|"+String.valueOf(response.responseCode));
+		
+		// store the health timeline indicator
+		data.put("health", data.get("health").substring(1)+decision);
 		db.save();
 		
-		if (error && "true".equalsIgnoreCase(Config.get().getOptions().get("slack.webhook.notifications"))){
-			String slackTemplate=Config.get().getOptions().get("slack.webhook.template");
-			String slackUrl=Config.get().getOptions().get("slack.webhook.url");
-			Http.post(slackUrl, slackTemplate.replaceAll("SERVER_NAME", name).replaceAll("SERVER_URL", url));
+		if (decision.matches("[D|T]")){
+			new Alert().alert(name, url, response.responseCode);
 		}
   }
 }
