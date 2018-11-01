@@ -167,7 +167,7 @@ public class ManagementController{
     	m.stop();
     
     for(Map<String, Object> t:newConfig.getList()){
-    	monitors.add(Monitor.newInstance(t.get("name")+"", Long.parseLong((String)t.get("pingInterval")), t.get("url")+""));
+    	monitors.add(Monitor.newInstance(t.get("name")+"", Long.parseLong((String)t.get("pingIntervalInMinutes")), t.get("url")+""));
     }
     
 
