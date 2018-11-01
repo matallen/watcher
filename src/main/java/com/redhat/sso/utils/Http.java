@@ -53,9 +53,9 @@ public class Http{
 			return response;
 		}catch(IOException e) {
 //			return new Response(999, null);
-			new Response(504, "Connection Timeout");
 			System.err.println("Http library mis-handled the http response most likely - see exception message: "+ e.getMessage());
 			e.printStackTrace();
+			return new Response(504, "Connection Timeout");
 //			throw new RuntimeException("Http library mis-handled the http response most likely - see exception", e);
 		}
 	}
