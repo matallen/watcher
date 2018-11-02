@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 
 import org.apache.log4j.Logger;
 
+import com.redhat.sso.utils.MapBuilder;
+
 public class InitServlet extends HttpServlet {
 	private static final Logger log=Logger.getLogger(InitServlet.class);
 	
@@ -19,7 +21,6 @@ public class InitServlet extends HttpServlet {
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
-    
     
     long pingIntervalInMs=3600l;
     if (null!=Config.get().getOptions().get("pingIntervalInMinutes"))
@@ -32,14 +33,33 @@ public class InitServlet extends HttpServlet {
  		log.debug("Starting Heartbeat with delay ("+Heartbeat.startupDelay+") and interval ("+intervalInHours+"h)");
     Heartbeat.start(TimeUnit.HOURS.toMillis(intervalInHours));
     
-    for(Monitor m:ManagementController.monitors)
+    // re-start all monitors
+    boolean dbUpdated=false;
+    Database db=Database.get();
+    for(Monitor m:ManagementController.monitors.values())
     	m.stop();
-    
     for(Map<String, Object> t:Config.get().getList()){
-    	ManagementController.monitors.add(Monitor.newInstance(t.get("name")+"", Long.parseLong((String)t.get("pingIntervalInMinutes")), t.get("url")+""));
-    }    
-    
-    
+    	String name=String.valueOf(t.get("name"));
+    	
+			// should centralize this method as it's used/copy-pasted elsewhere
+    	if (!db.getTasks().containsKey(name)){
+    		db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%20s", "").replaceAll(" ", "X")).build());
+    		dbUpdated=true;
+    	}
+    	
+    	boolean enabled="true".equalsIgnoreCase(String.valueOf(t.get("enabled")));
+    	ManagementController.monitors.put(name,
+    			Monitor.newInstance(
+    					name,
+    					Long.parseLong((String)t.get("pingIntervalInMinutes")), 
+    					t.get("url")+"",
+    					enabled
+    			));
+//    	if (enabled)
+//    		System.out.println("Started monitor for: "+name);
+    }
+    if (dbUpdated)
+    	db.save();
   }
 
   @Override

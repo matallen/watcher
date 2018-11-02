@@ -35,11 +35,53 @@ import com.redhat.sso.utils.MapBuilder;
 @Path("/")
 public class ManagementController{
 	private static final Logger log=Logger.getLogger(ManagementController.class);
-	public static List<Monitor> monitors=new ArrayList<Monitor>();
+//	public static List<Monitor> monitors=new ArrayList<Monitor>();
+	public static Map<String, Monitor> monitors=new HashMap<String, Monitor>();
 	
 	
 	public static void main(String[ ]asd){
 		System.out.println(String.format("%5s", "").replaceAll(" ", "X"));
+	}
+	
+	@POST
+	@Path("/tasks/{task}/enabled/{enable}")
+	public Response enabledMonitor(@PathParam("task")String taskName, @PathParam("enable")String enable, @Context HttpServletRequest request, @Context HttpServletResponse response, @Context ServletContext servletContext) throws JsonGenerationException, JsonMappingException, IOException{
+		System.out.println("enabledMonitor called: taskName="+taskName+", enable="+enable);
+		// find the config and update the config "enabled" setting
+		Config cfg=Config.get();
+		Map<String, Object> config=null;
+		for(Map<String, Object> t:cfg.getList()){
+			String name=t.get("name")+"";
+			if (name.equals(taskName)){
+				config=t;
+				break;
+			}
+		}
+		if (config==null) throw new RuntimeException("Unable to find task with name: "+taskName);
+		config.put("enabled", enable);
+		
+		// activate/deactivate the monitor
+		Monitor monitor=monitors.get(taskName);
+		if (monitor!=null){
+			// update existing monitor
+			if ("true".equalsIgnoreCase(enable)){
+				monitor.start(taskName, TimeUnit.MINUTES.toMillis(Long.parseLong((String)config.get("pingIntervalInMinutes"))));
+			}else{
+				monitor.stop();
+			}
+		}else{
+			// create a new monitor
+			monitors.put(taskName, Monitor.newInstance(
+					taskName, 
+    			Long.parseLong((String)config.get("pingIntervalInMinutes")), 
+    			config.get("url")+"",
+    			"true".equalsIgnoreCase(String.valueOf(config.get("enabled")))
+    		));
+		}
+		
+		cfg.save();
+
+		return Response.status(200).build();
 	}
 	
 	@POST
@@ -89,21 +131,35 @@ public class ManagementController{
 	  // response entity structure only
 		class Task{
 			private String name;       public String getName(){return name;}
+			private String enabled;    public String getEnabled(){return enabled;}
 			private String status;     public String getStatus(){return status;}
 			private String health;     public String getHealth(){return health;}
-			private String sourceUrl; public String getSourceUrl(){return sourceUrl;}
-			private String hostedUrl; public String getHostedUrl(){return hostedUrl;}
-			public Task(String name, String status, String health, String sourceUrl, String hostedUrl){ this.name=name; this.status=status; this.health=health; this.sourceUrl=sourceUrl; this.hostedUrl=hostedUrl; }
+//			private String sourceUrl;  public String getSourceUrl(){return sourceUrl;}
+//			private String hostedUrl;  public String getHostedUrl(){return hostedUrl;}
+			private Map<String,String> info;  public Map<String,String> getInfo(){return info;}
+			public Task(String name, String enabled, String status, String health, Map<String,String> info/*, String sourceUrl, String hostedUrl*/){ this.name=name; this.enabled=enabled; this.status=status; this.health=health; this.info=info; /*this.sourceUrl=sourceUrl; this.hostedUrl=hostedUrl;*/ }
 		}
 		List<Task> result=new ArrayList<Task>();
 		
 		Database db=Database.get();
 		boolean dbUpdated=false;
-		for(Map<String, Object> t:Config.get().getList()){
-			String name=(String)t.get("name");
-			dbUpdated=dbUpdated || Monitor.initTaskIfNecessary(db, name);
+		for(Map<String, Object> c:Config.get().getList()){
+			String name=(String)c.get("name");
+			
+			// should centralize this method as it's used/copy-pasted elsewhere
+    	if (!db.getTasks().containsKey(name)){
+    		db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%20s", "").replaceAll(" ", "X")).build());
+    		dbUpdated=true;
+    	}
+
 			Map<String, String> task=db.getTasks().get(name);
-			result.add(new Task(name, task.get("status"), task.get("health"), (String)t.get("info-sourceUrl"), (String)t.get("info-hostedUrl")));
+			
+			Map<String, String> info=new HashMap<String, String>();
+			info.put("Ping URL", (String)c.get("url"));
+			info.put("Source URL", (String)c.get("info-sourceUrl"));
+			info.put("Hosted URL", (String)c.get("info-hostedUrl"));
+			
+			result.add(new Task(name, (String)c.get("enabled"), task.get("status"), task.get("health"), info/*, (String)c.get("info-sourceUrl"), (String)c.get("info-hostedUrl")*/));
 		}
 		
 		if (dbUpdated) db.save();
@@ -149,12 +205,16 @@ public class ManagementController{
     	PingSelf.start(pingIntervalInMs);
     }
     
-    
-    for(Monitor m:monitors)
-    	m.stop();
-    
+    // re-start all monitors
+    for(Monitor m:monitors.values()) m.stop();
     for(Map<String, Object> t:newConfig.getList()){
-    	monitors.add(Monitor.newInstance(t.get("name")+"", Long.parseLong((String)t.get("pingIntervalInMinutes")), t.get("url")+""));
+    	String name=String.valueOf(t.get("name"));
+    	monitors.put(name, Monitor.newInstance(
+    			name, 
+    			Long.parseLong((String)t.get("pingIntervalInMinutes")), 
+    			t.get("url")+"",
+    			"true".equalsIgnoreCase(String.valueOf(t.get("enabled")))
+    		));
     }
     
 

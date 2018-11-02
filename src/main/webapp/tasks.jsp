@@ -28,6 +28,8 @@
 </style>
 <script>
 
+var taskInfo=[];
+
 function loadDataTable(){
   $('#example').DataTable( {
         "ajax": {
@@ -42,17 +44,22 @@ function loadDataTable(){
         "order" : [[0,"desc"]],
         "columns": [
 	        { "data": "name" },
+	        { "data": "enabled" },
 	        { "data": "status" },
 	        { "data": "health" },
         ],"columnDefs": [
             { "targets": 0, "orderable": true, "render": function (data,type,row){
-            	var info="";
-            	if (null!=row['sourceUrl'] || null!=row['hostedUrl']){
-            	  info="&nbsp;<a href='#' id='myBtn' onclick='showInfo(\""+row['sourceUrl']+"\",\""+row['hostedUrl']+"\");'><img class='info-img' src='images/info2-512.png'/></a>";
-            	}
-            	return "<a href='backups.jsp?task="+row['name']+"'>"+row['name']+"</a>"+info;// <div class='popup' onclick=\"document.getElementById(\'myPopup\').classList.toggle(\'show\')\">???</div>";
+            	// store the info where it can be accessed for display purposes later
+            	taskInfo[row['name']]=row.info;
+            	// add the button to show the info when clicked on
+            	var info="&nbsp;<a href='#' id='myBtn' onclick=\"showInfo2('"+row['name']+"')\"><img class='info-img' src='images/info2-512.png'/></a>";
+            	return "<a href='backups.jsp?task="+row['name']+"'>"+row['name']+"</a>"+info;
             }},
             { "targets": 1, "orderable": true, "render": function (data,type,row){
+            	return "<label class=\"switch-s\"><input onclick=\"toggleTask(this, '"+row['name']+"')\" id=\""+row['name']+"-enabled\" type=\"checkbox\" "+(row['enabled']=="true"?"checked":"")+"><span class=\"slider-s round\"></span></label>";
+            	return "";
+            }},
+            { "targets": 2, "orderable": true, "render": function (data,type,row){
           	  var text="";
           		var x=row['status'].split("|");
           		var status=x[0],responseCode=x[1];
@@ -63,7 +70,7 @@ function loadDataTable(){
           	  if ('D'==status) text="Down";
           	  return "<div class='status status-"+status.toLowerCase()+"' title='Response code was: "+responseCode+"'>"+text+"</div>";
             }},
-          { "targets": 2, "orderable": true, "render": function (data,type,row){
+          { "targets": 3, "orderable": true, "render": function (data,type,row){
         	  var healthIndicator="";
         	  for(i=0;i<row['health'].length;i++)
         		  healthIndicator+="<div class='health health-"+row['health'][i].toLowerCase()+"'>&nbsp;</div>";
@@ -73,6 +80,10 @@ function loadDataTable(){
     } );
 }
 
+function toggleTask(o, name){
+	var enabled=o.checked;
+	Http.httpPost("${pageContext.request.contextPath}/api/tasks/"+name+"/enabled/"+enabled, null);
+}
 $(document).ready(function() {
     loadDataTable();
     
@@ -97,15 +108,24 @@ $(document).ready(function() {
 		}
 });
 
-function showInfo(source, hosted){
-	document.getElementById("info-sourceUrl").innerHTML="No Info supplied";
-	document.getElementById("info-hostedUrl").innerHTML="No Info supplied";
-	
-	if (source!="null")
-		document.getElementById("info-sourceUrl").innerHTML="<a href='"+source+"'>"+source+"</a>";
-	if (hosted!="null")
-		document.getElementById("info-hostedUrl").innerHTML="<a href='"+hosted+"'>"+hosted+"</a>";
+function showInfo2(taskName){
+	var content="";
+	for (key in taskInfo[taskName]) {
+		var value=taskInfo[taskName][key]
+		if (null==value) value="No info supplied"
+		content+="<div class='row'><div class='col-sm-2'>"+key+"</div><div class='col-sm-8'>"+urlify(value)+"</div></div>";
+	}
+	$('#info').html(content+"");
 	document.getElementById("myModal").style.display="block";
+}
+
+function urlify(text) {
+	var urlRegex = /(http.+[^\s])/g;
+	return text.replace(urlRegex, function(url) {
+       //return '<a href="${pageContext.request.contextPath}/api/download?file=' + url + '">' + url + '</a>';
+       console.log("url="+url);
+		return '<a href="'+url+'">'+url+'</a>';
+   })
 }
 </script>
   
@@ -118,10 +138,7 @@ function showInfo(source, hosted){
 					<div id="myModal" class="modal">
 				  <div class="modal-content">
 				    <span class="close">&times;</span>
-				    <table style="width:80%">
-				    	<tr><td>Source URL:</td><td><span id='info-sourceUrl'></span></td></tr>
-				    	<tr><td>Hosted URL:</td><td><span id='info-hostedUrl'></span></td></tr>
-				    </table>
+					    <div id="info"></div>
 				  </div>
 				
 				</div>
@@ -145,6 +162,7 @@ function showInfo(source, hosted){
               <thead>
                   <tr>
                       <th align="left">Name</th>
+                      <th align="left">Enabled</th>
                       <th align="left">Status</th>
                       <th align="left">Health</th>
                   </tr>

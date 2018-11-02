@@ -19,14 +19,18 @@ public class Monitor{
   private String name;
   private String url;
   
+  public Monitor(){}
   public Monitor(String name, String url){
   	this.name=name;
   	this.url=url;
   }
   
-  public static Monitor newInstance(String name, long intervalInMins, String url){
+  public static Monitor newInstance(String name, long intervalInMins, String url, boolean enabled){
   	Monitor m=new Monitor(name, url);
-  	m.start(name, TimeUnit.MINUTES.toMillis(intervalInMins));
+  	if (enabled){
+//  		System.out.println("starting timer for :"+name);
+  		m.start(name, TimeUnit.MINUTES.toMillis(intervalInMins));
+  	}
   	return m;
   }
   
@@ -49,11 +53,14 @@ public class Monitor{
   }
   
   //Initialise task if necessary
-  public static boolean initTaskIfNecessary(Database db, String name){
+  public boolean initTaskIfNecessary(Database db, String name){
   	boolean dataChanged=false;
 		if (null==db.getTasks().get(name)){ // lazy init the task
-			db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "Unknown").put("health", String.format("%20s", "").replaceAll(" ", "X")).build());
+			System.out.println("init: "+name+" not found, initializing it");
+			db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%20s", "").replaceAll(" ", "X")).build());
 			dataChanged=true;
+		}else{
+			System.out.println("init: "+name+" was found");
 		}
 		return dataChanged;
   }
@@ -65,7 +72,13 @@ public class Monitor{
 		log.info("Monitor ("+name+"): called '" + url + "', response code was: " + response.responseCode);
     
 		Database db=Database.get();
-		if (initTaskIfNecessary(db, name));
+		// should centralize this method as it's used/copy-pasted elsewhere
+  	if (!db.getTasks().containsKey(name)){
+  		db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%20s", "").replaceAll(" ", "X")).build());
+//  		dbUpdated=true;
+  	}
+
+//		if (new Monitor().initTaskIfNecessary(db, name));
 			
 		Map<String, String> data=db.getTasks().get(name);
 		data.put("status", String.valueOf(response.responseCode));
@@ -81,7 +94,7 @@ public class Monitor{
 		}else if (response.responseCode>=500 && response.responseCode<=599){ // server errors
 			decision="T";
 		}else{
-			decision="U";
+			decision="X";
 		}
 		
 		data.put("status", decision+"|"+String.valueOf(response.responseCode));
