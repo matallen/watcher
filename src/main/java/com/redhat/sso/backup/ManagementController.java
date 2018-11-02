@@ -158,6 +158,9 @@ public class ManagementController{
 			info.put("Ping URL", (String)c.get("url"));
 			info.put("Source URL", (String)c.get("info-sourceUrl"));
 			info.put("Hosted URL", (String)c.get("info-hostedUrl"));
+			info.put("Is it backing up?", (String)c.get("backup"));
+			info.put("Ping Interval (mins)", (String)c.get("pingIntervalInMinutes"));
+			
 			
 			result.add(new Task(name, (String)c.get("enabled"), task.get("status"), task.get("health"), info/*, (String)c.get("info-sourceUrl"), (String)c.get("info-hostedUrl")*/));
 		}

@@ -42,7 +42,11 @@ public class Monitor{
   }
 
   public void stop(){
-    t.cancel();
+  	if (t!=null){
+  		t.cancel();
+  	}else{
+  		log.warn("("+name+") Timer \"Stop\" called, but no timer was running");
+  	}
   }
 
   class MonitorRunnable extends TimerTask {

@@ -57,7 +57,14 @@ public class InitServlet extends HttpServlet {
     			));
 //    	if (enabled)
 //    		System.out.println("Started monitor for: "+name);
+    	
+    	// reset data on startup, so the health bar starts again
+    	db.getTasks().clear();
+    	
     }
+    
+    
+    
     if (dbUpdated)
     	db.save();
   }
