@@ -33,9 +33,13 @@ public class InitServlet extends HttpServlet {
  		log.debug("Starting Heartbeat with delay ("+Heartbeat.startupDelay+") and interval ("+intervalInHours+"h)");
     Heartbeat.start(TimeUnit.HOURS.toMillis(intervalInHours));
     
+    Database db=Database.get();
+    
+    // reset data on startup, so the health bar starts again
+    db.getTasks().clear();
+    
     // re-start all monitors
     boolean dbUpdated=false;
-    Database db=Database.get();
     for(Monitor m:ManagementController.monitors.values())
     	m.stop();
     for(Map<String, Object> t:Config.get().getList()){
@@ -58,8 +62,6 @@ public class InitServlet extends HttpServlet {
 //    	if (enabled)
 //    		System.out.println("Started monitor for: "+name);
     	
-    	// reset data on startup, so the health bar starts again
-    	db.getTasks().clear();
     	
     }
     
