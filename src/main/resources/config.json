@@ -7,7 +7,8 @@
 			"info-hostedUrl": "https://console.d1.casl.rht-labs.com/console/project/community-ninja-board",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
-			"backup": "true"
+			"backup": "true",
+			"enabled": "true"
 		},
 		{
 			"name": "ninja-config",
@@ -16,7 +17,8 @@
 			"info-hostedUrl": "https://console.d1.casl.rht-labs.com/console/project/community-ninja-board",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
-			"backup": "true"
+			"backup": "true",
+			"enabled": "true"
 		},
 		{
 			"name": "search-widget-version",
@@ -24,21 +26,74 @@
 			"info-sourceUrl": "https://github.com/matallen/search-widget",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
-			"backup": "false"
+			"backup": "false",
+			"enabled": "true"
 		},
 		{
 			"name": "old-solution-tracker-version",
 			"url": "http://openjdk-app-solutiontracker.6923.rh-us-east-1.openshiftapps.com/solution-tracker/version",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
-			"backup": "false"
+			"backup": "false",
+			"enabled": "false"
 		},
 		{
 			"name": "doesnt-exist-test",
 			"url": "https://search-widget-search-widget.6923.rh-us-east-1.openshiftapps.com/search-widget/incorrect",
 			"backupIntervalInMinutes": "1440",
 			"pingIntervalInMinutes": "1",
-			"backup": "false"
+			"backup": "false",
+			"enabled": "true"
+		},
+		{
+			"name": "dynamic-questionnaire-webpage",
+			"url": "http://dynamic-wizard-app-questionable2.apps.d1.casl.rht-labs.com/dynamic-wizard-example-app-bc",
+			"info-sourceUrl": "https://github.com/matallen/questionable",
+			"info-hostedUrl": "https://console.d1.casl.rht-labs.com/console/project/questionable2",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "10",
+			"backup": "false",
+			"enabled": "true"
+		},
+		{
+			"name": "pathfinder-server-DEV-health",
+			"url": "http://pathfinder-server-pathfinder-dev.int.open.paas.redhat.com/management/health",
+			"info-sourceUrl": "https://github.com/redhat-cop/pathfinder",
+			"info-hostedUrl": "https://open.paas.redhat.com/console/project/pathfinder-dev",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "1",
+			"backup": "false",
+			"enabled": "true"
+		},
+		{
+			"name": "pathfinder-ui-DEV-webpage",
+			"url": "http://pathfinder-ui-pathfinder-dev.int.open.paas.redhat.com/pathfinder-ui/",
+			"info-sourceUrl": "https://github.com/redhat-cop/pathfinder",
+			"info-hostedUrl": "https://open.paas.redhat.com/console/project/pathfinder-dev",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "1",
+			"backup": "false",
+			"enabled": "true"
+		},
+		{
+			"name": "solution-tracker-version",
+			"url": "http://sso.usersys.redhat.com:8080/solution-tracker/version",
+			"info-sourceUrl": "https://gitlab.consulting.redhat.com/mallen/solution-tracker",
+			"info-hostedUrl": "",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "1",
+			"backup": "false",
+			"enabled": "true"
+		},
+		{
+			"name": "solution-tracker-agent",
+			"url": "http://www.solutiontools.co.uk/solution-tracker/api/analytics/viewHits",
+			"info-sourceUrl": "https://github.com/matallen/solution-tracker-agent",
+			"info-hostedUrl": "",
+			"backupIntervalInMinutes": "1440",
+			"pingIntervalInMinutes": "1",
+			"backup": "false",
+			"enabled": "true"
 		}
 	],
 	"options": {
@@ -47,7 +102,7 @@
 		"format": "yyyy-MM-dd'T'HHmmss",
 		"maxEvents": "10000",
 		"slack.webhook.notifications": "false",
-		"slack.webhook.template": "payload={\"username\": \"webhookbot\", \"text\": \"SERVER_NAME is DOWN. Failed URL was SERVER_URL.\", \"icon_emoji\": \":ghost:\"}",
+		"slack.webhook.template": "payload={\"username\": \"webhookbot\", \"text\": \"`SERVER_NAME` is *DOWN!* - <http://data-backup-data-backup.int.open.paas.redhat.com/http-backup|Watcher>\", \"icon_emoji\": \":ghost:\"}",
 		"slack.webhook.url": "https://hooks.slack.com/services/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"
 	},
 	"values": {}

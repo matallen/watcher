@@ -44,6 +44,13 @@ public class ManagementController{
 	}
 	
 	@POST
+	@Path("/tasks/{task}/backupNow")
+	public Response backupNow(@PathParam("task")String taskName, @Context HttpServletRequest request, @Context HttpServletResponse response, @Context ServletContext servletContext) throws JsonGenerationException, JsonMappingException, IOException{
+		new Backup().run(taskName);
+		return Response.status(200).build();
+	}
+	
+	@POST
 	@Path("/tasks/{task}/enabled/{enable}")
 	public Response enabledMonitor(@PathParam("task")String taskName, @PathParam("enable")String enable, @Context HttpServletRequest request, @Context HttpServletResponse response, @Context ServletContext servletContext) throws JsonGenerationException, JsonMappingException, IOException{
 		System.out.println("enabledMonitor called: taskName="+taskName+", enable="+enable);
@@ -89,7 +96,8 @@ public class ManagementController{
 	public Response setConfigOption(@PathParam("option")String option , @Context HttpServletRequest request, @Context HttpServletResponse response, @Context ServletContext servletContext) throws JsonGenerationException, JsonMappingException, IOException{
 		String payload=IOUtils.toString(request.getInputStream());
 		Config cfg=Config.get();
-		cfg.getOptions().put("slack.webhook.notifications", String.valueOf(payload.trim().equalsIgnoreCase("true") || payload.trim().equalsIgnoreCase("on") || payload.trim().equalsIgnoreCase("checked")) );
+//		cfg.getOptions().put(option, String.valueOf(payload.trim().equalsIgnoreCase("true") || payload.trim().equalsIgnoreCase("on") || payload.trim().equalsIgnoreCase("checked")) );
+		cfg.getOptions().put(option, payload.trim() );
 		cfg.save();
 		return Response.status(200).build();
 	}
@@ -97,7 +105,7 @@ public class ManagementController{
 	@GET
 	@Path("/config/options/{option}")
 	public Response getConfigOption(@PathParam("option")String option , @Context HttpServletRequest request, @Context HttpServletResponse response, @Context ServletContext servletContext) throws JsonGenerationException, JsonMappingException, IOException{
-		return Response.status(200).entity(Config.get().getOptions().get("slack.webhook.notifications")).build();
+		return Response.status(200).entity(Config.get().getOptions().get(option)).build();
 	}
 	
 	@GET
@@ -108,16 +116,26 @@ public class ManagementController{
 		File taskRootFolder=new File(Config.STORAGE_ROOT, task);
 		
 		// response entity structure only
+		
 		class Backup{
-			private String name; public String getName(){return name;}
-			private String file; public String getFile(){return file;}
-			public Backup(String name, String file){ this.name=name; this.file=file; }
+			String name; public String getName(){return name;}
+			Long size; public Long getSize(){return size;}
+			Backup(String name, Long size){ this.name=name; this.size=size; }
 		}
+		//class Task{
+		//	String name; public String getName(){return name;}
+		//	List<Backup> backups=new ArrayList<Backup>();
+		//	Task(String name){ this.name=name; }
+		//}
+		
+		//Task result=new Task(task);
 		
 		List<Backup> result=new ArrayList<Backup>();
 		if (taskRootFolder.exists()){
 			for(File f:taskRootFolder.listFiles()){
-				result.add(new Backup(f.getName(), ""));
+				log.info("File:: "+f.getAbsolutePath()+" - size = "+f.length());
+				result.add(new Backup(f.getName(), /*"",*/ f.length()));
+//				result.backups.add(new Backup(f.getName(), /*"",*/ f.length()));
 			}
 		}
 		return Response.status(200).entity(Json.newObjectMapper(true).writeValueAsString(result)).build();
@@ -134,10 +152,11 @@ public class ManagementController{
 			private String enabled;    public String getEnabled(){return enabled;}
 			private String status;     public String getStatus(){return status;}
 			private String health;     public String getHealth(){return health;}
+			private String backup;     public String getBackup(){return backup;}
 //			private String sourceUrl;  public String getSourceUrl(){return sourceUrl;}
 //			private String hostedUrl;  public String getHostedUrl(){return hostedUrl;}
 			private Map<String,String> info;  public Map<String,String> getInfo(){return info;}
-			public Task(String name, String enabled, String status, String health, Map<String,String> info/*, String sourceUrl, String hostedUrl*/){ this.name=name; this.enabled=enabled; this.status=status; this.health=health; this.info=info; /*this.sourceUrl=sourceUrl; this.hostedUrl=hostedUrl;*/ }
+			public Task(String name, String enabled, String status, String health, String backup, Map<String,String> info/*, String sourceUrl, String hostedUrl*/){ this.name=name; this.enabled=enabled; this.status=status; this.health=health; this.backup=backup; this.info=info; /*this.sourceUrl=sourceUrl; this.hostedUrl=hostedUrl;*/ }
 		}
 		List<Task> result=new ArrayList<Task>();
 		
@@ -158,11 +177,11 @@ public class ManagementController{
 			info.put("Ping URL", (String)c.get("url"));
 			info.put("Source URL", (String)c.get("info-sourceUrl"));
 			info.put("Hosted URL", (String)c.get("info-hostedUrl"));
-			info.put("Is it backing up?", (String)c.get("backup"));
+//			info.put("Is it backing up?", (String)c.get("backup"));
 			info.put("Ping Interval (mins)", (String)c.get("pingIntervalInMinutes"));
 			
 			
-			result.add(new Task(name, (String)c.get("enabled"), task.get("status"), task.get("health"), info/*, (String)c.get("info-sourceUrl"), (String)c.get("info-hostedUrl")*/));
+			result.add(new Task(name, (String)c.get("enabled"), task.get("status"), task.get("health"), (String)c.get("backup"), info/*, (String)c.get("info-sourceUrl"), (String)c.get("info-hostedUrl")*/));
 		}
 		
 		if (dbUpdated) db.save();

@@ -51,9 +51,15 @@ function loadDataTable(){
             { "targets": 0, "orderable": true, "render": function (data,type,row){
             	// store the info where it can be accessed for display purposes later
             	taskInfo[row['name']]=row.info;
+            	taskInfo[row['name']]['backup']=row['backup'];
             	// add the button to show the info when clicked on
             	var info="&nbsp;<a href='#' id='myBtn' onclick=\"showInfo2('"+row['name']+"')\"><img class='info-img' src='images/info2-512.png'/></a>";
-            	return "<a href='backups.jsp?task="+row['name']+"'>"+row['name']+"</a>"+info;
+            	console.log("backup="+row['backup']);
+            	if (null!= row['backup'] && "true"==row['backup'].toLowerCase()){
+	            	return "<a href='backups.jsp?task="+row['name']+"'>"+row['name']+"</a>"+info;
+            	}else{
+            		return row['name']+info;
+            	}
             }},
             { "targets": 1, "orderable": true, "render": function (data,type,row){
             	return "<label class=\"switch-s\"><input onclick=\"toggleTask(this, '"+row['name']+"')\" id=\""+row['name']+"-enabled\" type=\"checkbox\" "+(row['enabled']=="true"?"checked":"")+"><span class=\"slider-s round\"></span></label>";
@@ -115,6 +121,9 @@ function showInfo2(taskName){
 		if (null==value) value="No info supplied"
 		content+="<div class='row'><div class='col-sm-2'>"+key+"</div><div class='col-sm-8'>"+urlify(value)+"</div></div>";
 	}
+//	if (taskInfo[taskName]['backup']=="true"){
+//	  content+="<input type='button' onclick='return backupNow(\""+taskName+"\");' value='Backup Now' />"
+//	}
 	$('#info').html(content+"");
 	document.getElementById("myModal").style.display="block";
 }
@@ -127,6 +136,11 @@ function urlify(text) {
 		return '<a href="'+url+'">'+url+'</a>';
    })
 }
+
+//function backupNow(taskName){
+//	console.log("BackupNow:: "+taskName);
+//	Http.httpPost("${pageContext.request.contextPath}/api/tasks/"+taskName+"/backupNow", null);
+//}
 </script>
   
     <%@include file="nav.jsp"%>

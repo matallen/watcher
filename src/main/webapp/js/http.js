@@ -1,5 +1,5 @@
 Http = {
-	send: function(action, uri, data){
+	send: function(action, uri, data, callback){
 	  var xhr = new XMLHttpRequest();
 	  var ctx = "${pageContext.request.contextPath}";
 	  var url=uri;
@@ -13,16 +13,23 @@ Http = {
 	  }
 	  xhr.onloadend = function () {
 		console.log("datatables-functions::send:: onloadend ... status = "+this.status);
-		  
+		
 	  	if (this.status == 200){
 		  	console.log("datatables-functions::send:: returned 200");
 	  	}else if(xhr.status>=400){
 	  		
 	  	}
+	  	
+	  	if (undefined!=callback){
+	  		callback(xhr);
+	  	}
 	  };
 	},
 	httpPost: function(uri, data){
 		return Http.send("POST", uri, data);
+	},
+	httpPost: function(uri, data, callback){
+		return Http.send("POST", uri, data, callback);
 	},
 	httpDelete: function(uri, data){
 		return Http.send("DELETE", uri, data);

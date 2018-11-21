@@ -36,7 +36,7 @@ public class Heartbeat {
     @Override
     public void run() {
       log.info("Heartbeat fired");
-      new Backup().run();
+      new Backup().run(null); // null == backup all tasks
     }      
   }
 

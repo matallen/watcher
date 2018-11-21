@@ -28,9 +28,11 @@ public class Http{
 	
 	
 	public static void main(String[] asd){
-		Response response=Http.http("GET", "http://openjdk-app-solutiontracker.6923.rh-us-east-1.openshiftapps.com/solution-tracker/versionx", null);
+//		Response response=Http.http("GET", "http://openjdk-app-solutiontracker.6923.rh-us-east-1.openshiftapps.com/solution-tracker/versionx", null);
+//		
+//		Response response2=Http.http("POST", "https://hooks.slack.com/services/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", "payload={\"username\": \"webhookbot\", \"text\": \"SERVER_NAME is DOWN. Failed URL was SERVER_URL.\", \"icon_emoji\": \":ghost:\"}");
 		
-		Response response2=Http.http("POST", "https://hooks.slack.com/services/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", "payload={\"username\": \"webhookbot\", \"text\": \"SERVER_NAME is DOWN. Failed URL was SERVER_URL.\", \"icon_emoji\": \":ghost:\"}");
+		Response response=Http.get("https://pathfinder-ui-pathfinder-prod.int.open.paas.redhat.com/pathfinder-ui/");
 		
 		System.out.println(response.responseCode);
 	}

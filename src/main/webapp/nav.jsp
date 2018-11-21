@@ -2,16 +2,14 @@
 <div class="navbar">
   <div class="navbar-header">
     <a href="<%=request.getContextPath()%>" class="navbar-brand2"><img src="images/redhat-logo.png"/>
-    	
     	<span class="navbar-brand3"></span>
-    	
     </a>
   </div>
   <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
     <ul class="nav navbar-nav">
       <li class="dropdown">
       <style>
-      .xxx{
+      .menu-title{
       	font-size: 18px;
       	font-family: Overpass;
       	padding-top: 21px !important;
@@ -27,13 +25,10 @@
       }
       .nav>li>a{
       	padding-left: 0px;
-      	/*
-      	height: 50px;
-      	*/
       }
       </style>
       
-        <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="xxx dropdown-toggle" href="#" id="drop2">
+        <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="menu-title dropdown-toggle" href="#" id="drop2">
           Watcher
           <span class="caret"></span>
         </a>
