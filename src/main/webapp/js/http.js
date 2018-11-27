@@ -34,6 +34,9 @@ Http = {
 	httpDelete: function(uri, data){
 		return Http.send("DELETE", uri, data);
 	},
+	httpDelete: function(uri, data, callback){
+		return Http.send("DELETE", uri, data, callback);
+	},
 	httpGet: function(url, callback){
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", url, true);
