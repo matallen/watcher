@@ -32,7 +32,7 @@ public class Backup {
     		String remoteLocation=(String)destination.get("url");
     		File source=new File(Config.STORAGE_ROOT, (String)destination.get("name"));
     		
-    		String newName=FilenameUtils.getBaseName(source.getName())+"-"+sdf.format(new Date())+".bak";//+FilenameUtils.getExtension(source.getName());
+    		String newName=FilenameUtils.getBaseName(source.getName())+"-"+sdf.format(new Date())+(taskToBackup!=null?"-[explicit]":"")+".bak";//+FilenameUtils.getExtension(source.getName());
     		File localDestination=new File(source, newName);
     		
     		try{
