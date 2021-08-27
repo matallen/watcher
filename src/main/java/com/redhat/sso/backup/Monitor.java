@@ -109,7 +109,7 @@ public class Monitor{
 		db.save();
 		
 		if (decision.matches("[D|T]")){
-			new AlertSlack().alert(name, url, response.responseCode);
+//			new AlertSlack().alert(name, url, response.responseCode);
 			new AlertGoogleChat().send(ChatEvent.onHttpFailure, name, url, String.valueOf(response.responseCode));
 		}
   }

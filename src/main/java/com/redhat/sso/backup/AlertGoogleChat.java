@@ -28,7 +28,7 @@ public class AlertGoogleChat{
 //						String googleHangoutsChatPayload=String.format(template, notificationTexts);
 						String googleHangoutsChatPayload=template.replaceAll("TASK_NAME", name).replaceAll("RESPONSE_CODE", httpResponse).replaceAll("TASK_URL", taskUrl);
 						Response r=Http.post(channel, googleHangoutsChatPayload, new MapBuilder<String, String>().put("Content-Type", "application/json; charset=UTF-8").build());
-						System.out.println("Response = "+r.responseCode);
+						System.out.println("Sending '"+googleHangoutsChatPayload+"' to google chat api. response.code="+r.responseCode);
 					}
 //				}
 			}
