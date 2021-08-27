@@ -10,7 +10,7 @@ java.util.Map
 <link href="css/slide-switch.css" rel="stylesheet">
 <link href="css/popup.css" rel="stylesheet">
 
-<style>
+<style id="styles">
 #tasks{margin:auto;width:95%;}
 #buttonbar{position:relative;}
 .status{width: 150px;text-align: center;border-radius:10px;color:#FFF}
@@ -19,7 +19,7 @@ java.util.Map
 .status-t{background-color: #f19c48;}
 .status-x{background-color: #ddd;}
 
-.health{width: 20px;height:20px;float:left;border: silver solid 1px;}
+.health{/* width: 20px; */height:20px;float:left;border: silver solid 1px;}
 .health-u{background-color: #71b568;}
 .health-d{background-color: #EE0000;}
 .health-t{background-color: #f19c48;}
@@ -94,7 +94,15 @@ function toggleTask(o, name){
 	var enabled=o.checked;
 	Http.httpPost("${pageContext.request.contextPath}/api/tasks/"+name+"/enabled/"+enabled, null);
 }
+var healthBlockSize;
 $(document).ready(function() {
+    Http.httpGet("${pageContext.request.contextPath}/api/config/options/health.block.size", function(response){
+	    healthBlockSize=response;
+	    var healthSizeCss=".health{width:"+(400/parseInt(healthBlockSize))+"px;}";
+	    console.log("healthSizeCss="+healthSizeCss);
+	    document.getElementById("styles").innerHTML+=healthSizeCss;
+    });
+    
     loadDataTable();
     
     // onchange handler to set or unset the config option
@@ -106,6 +114,8 @@ $(document).ready(function() {
     Http.httpGet("${pageContext.request.contextPath}/api/config/options/notifications.enabled", function(response){
     	$('#alertsEnabled').prop("checked", "true"==response.toLowerCase());
     });
+    
+    
     // popup info handler
     var modal = document.getElementById('myModal');
 		document.getElementsByClassName("close")[0].onclick = function() {

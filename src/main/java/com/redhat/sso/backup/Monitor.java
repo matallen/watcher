@@ -19,6 +19,7 @@ public class Monitor{
   private Timer t;
   private String name;
   private String url;
+//  private static int healthBlockSize=(null!=Config.get().getOptions().get("health.block.size")?Integer.parseInt(Config.get().getOptions().get("health.block.size")):20);
   
   public Monitor(){}
   public Monitor(String name, String url){
@@ -70,6 +71,13 @@ public class Monitor{
 		return dataChanged;
   }
   
+  public static void resizeHealth(Map<String, String> data, int healthBlockSize){
+		// resize the health block if necessary
+		if (data.get("health").length()>healthBlockSize) data.put("health", data.get("health").substring(0, healthBlockSize));
+		if (data.get("health").length()<healthBlockSize) data.put("health", String.format("%"+(healthBlockSize-data.get("health").length())+"s", "").replaceAll(" ", "X") + data.get("health"));
+
+  }
+  
   public static synchronized void r(String name, String url){
 //    log.info(name+" fired");
     
@@ -77,16 +85,23 @@ public class Monitor{
 		log.info("Monitor ("+name+"): called '" + url + "', response code was: " + response.responseCode);
     
 		Database db=Database.get();
+		
+		int healthBlockSize=(null!=Config.get().getOptions().get("health.block.size")?Integer.parseInt(Config.get().getOptions().get("health.block.size")):20); // 20 is the default
+		
 		// should centralize this method as it's used/copy-pasted elsewhere
   	if (!db.getTasks().containsKey(name)){
-  		db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%20s", "").replaceAll(" ", "X")).build());
+  		db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%"+healthBlockSize+"s", "").replaceAll(" ", "X")).build());
 //  		dbUpdated=true;
   	}
 
 //		if (new Monitor().initTaskIfNecessary(db, name));
+  	
+  	
 			
 		Map<String, String> data=db.getTasks().get(name);
 		data.put("status", String.valueOf(response.responseCode));
+		
+		resizeHealth(data, healthBlockSize);
 		
 		// make a decision on the response that represents the status
 		String decision="";

@@ -175,6 +175,8 @@ public class ManagementController{
 		}
 		List<Task> result=new ArrayList<Task>();
 		
+		int healthBlockSize=(null!=Config.get().getOptions().get("health.block.size")?Integer.parseInt(Config.get().getOptions().get("health.block.size")):20); // 20 is the default
+		
 		Database db=Database.get();
 		boolean dbUpdated=false;
 		for(Map<String, Object> c:Config.get().getList()){
@@ -182,7 +184,7 @@ public class ManagementController{
 			
 			// should centralize this method as it's used/copy-pasted elsewhere
     	if (!db.getTasks().containsKey(name)){
-    		db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%20s", "").replaceAll(" ", "X")).build());
+    		db.getTasks().put(name, new MapBuilder<String,String>().put("name", name).put("status", "X|999").put("health", String.format("%"+healthBlockSize+"s", "").replaceAll(" ", "X")).build());
     		dbUpdated=true;
     	}
 
@@ -195,6 +197,8 @@ public class ManagementController{
 //			info.put("Is it backing up?", (String)c.get("backup"));
 			info.put("Ping Interval (mins)", (String)c.get("pingIntervalInMinutes"));
 			
+			
+			Monitor.resizeHealth(task, healthBlockSize);
 			
 			result.add(new Task(name, (String)c.get("enabled"), task.get("status"), task.get("health"), (String)c.get("backup"), info/*, (String)c.get("info-sourceUrl"), (String)c.get("info-hostedUrl")*/));
 		}
