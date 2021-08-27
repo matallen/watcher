@@ -27,6 +27,7 @@
 		"pingIntervalInMinutes": "5",
 		"format": "yyyy-MM-dd'T'HHmmss",
 		"maxEvents": "10000",
+		"notifications.enabled": "false",
 		"slack.webhook.notifications": "false",
 		"slack.webhook.template": "payload={\"username\": \"webhookbot\", \"text\": \"`SERVER_NAME` is *DOWN!* - <http://data-backup-data-backup.int.open.paas.redhat.com/http-backup|Watcher>\", \"icon_emoji\": \":ghost:\"}",
 		"slack.webhook.urls": "https://hooks.slack.com/services/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",
