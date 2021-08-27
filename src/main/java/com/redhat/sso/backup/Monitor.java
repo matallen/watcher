@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import com.redhat.sso.backup.AlertGoogleChat.ChatEvent;
 import com.redhat.sso.utils.Http;
 import com.redhat.sso.utils.MapBuilder;
 import com.redhat.sso.utils.Http.Response;
@@ -108,7 +109,8 @@ public class Monitor{
 		db.save();
 		
 		if (decision.matches("[D|T]")){
-			new Alert().alert(name, url, response.responseCode);
+			new AlertSlack().alert(name, url, response.responseCode);
+			new AlertGoogleChat().send(ChatEvent.onHttpFailure, name, url, String.valueOf(response.responseCode));
 		}
   }
 }

@@ -26,6 +26,7 @@ public class Config {
   private List<Map<String,Object>> list=null;
   private Map<String,String> options=null;
   private Map<String,Object> values=null;
+  private List<Map<String,String>> notifications=null;
   
   
   public Config(){}
@@ -37,6 +38,7 @@ public class Config {
       this.options=x.options;
       this.list=x.list;
       this.values=x.values;
+      this.notifications=x.notifications;
       instance=this;
     }catch (JsonParseException e){
       e.printStackTrace();
@@ -51,36 +53,12 @@ public class Config {
   public Map<String,String> getOptions() {if (options==null) options=new HashMap<String, String>(); return options;}
   public List<Map<String,Object>> getList() {if (list==null) list=new ArrayList<Map<String, Object>>(); return list;}
   public Map<String,Object> getValues() {if (values==null) values=new HashMap<String, Object>(); return values;}
+  public List<Map<String,String>> getNotifications() {if (notifications==null) notifications=new ArrayList<Map<String, String>>(); return notifications;}
   
   public static void main(String[] asd) throws JsonGenerationException, JsonMappingException, IOException{
     Config c=Config.get();
     
-    c.getList().clear();
-    c.getList().add(new MapBuilder<String, Object>()
-        .put("name", "ninja")
-        .put("url", "https://community-ninja-board-community-ninja-board.apps.d1.casl.rht-labs.com/community-ninja-board/api/database/get")
-        .build());
-    c.getList().add(new MapBuilder<String, Object>()
-        .put("name", "ninja2")
-        .put("url", "https://community-ninja-board-community-ninja-board.apps.d2.casl.rht-labs.com/community-ninja-board/api/database/get")
-        .build());
-    
-    c.getOptions().put("intervalInHours", "24");
-    c.getOptions().put("format", "yyyy-MM-dd'T'HHmmss");
-    c.getOptions().put("maxEvents", "10000");
-//    c.getValues().put("lastRun", 1520660463301l);
-    c.save();
-    
-//    String json=Json.newObjectMapper(true).writeValueAsString(c);
-//    System.out.println(json);
-//    
-//    Config cfg=Json.newObjectMapper(true).readValue(json, Config.class);
-//    System.out.println(Json.newObjectMapper(true).writeValueAsString(cfg));
-    
-    
-    
     System.out.println(Json.newObjectMapper(true).writeValueAsString(Config.get()));
-    
   }
   
   

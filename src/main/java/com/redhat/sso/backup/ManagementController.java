@@ -42,6 +42,10 @@ public class ManagementController{
 	
 	public static void main(String[ ]asd){
 		System.out.println(String.format("%5s", "").replaceAll(" ", "X"));
+		
+		Database.get();
+		new Backup().run(null);
+		
 	}
 	
 	@DELETE
@@ -138,21 +142,14 @@ public class ManagementController{
 		class Backup{
 			String name; public String getName(){return name;}
 			Long size; public Long getSize(){return size;}
-			Backup(String name, Long size){ this.name=name; this.size=size; }
+			Backup(String name, /*String[] labels,*/ Long size){ this.name=name; /*this.labels=labels;*/ this.size=size; }
 		}
-		//class Task{
-		//	String name; public String getName(){return name;}
-		//	List<Backup> backups=new ArrayList<Backup>();
-		//	Task(String name){ this.name=name; }
-		//}
-		
-		//Task result=new Task(task);
 		
 		List<Backup> result=new ArrayList<Backup>();
 		if (taskRootFolder.exists()){
 			for(File f:taskRootFolder.listFiles()){
 				log.info("File:: "+f.getAbsolutePath()+" - size = "+f.length());
-				result.add(new Backup(f.getName(), /*"",*/ f.length()));
+				result.add(new Backup(f.getName(), /*new String[]{},*/ f.length()));
 //				result.backups.add(new Backup(f.getName(), /*"",*/ f.length()));
 			}
 		}

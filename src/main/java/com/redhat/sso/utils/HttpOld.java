@@ -6,14 +6,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
-
-
-public class Http{
-	private static final Logger log = Logger.getLogger(Http.class);
+public class HttpOld{
 	
 	public static class Response{
 		public Response(int responseCode, String response){
@@ -22,40 +16,21 @@ public class Http{
 		}
 		public int responseCode;
 		public String response;
-		public int getResponseCode(){
-			return responseCode;
-		}
-		public String getString(){
-			return response;
-		}
 	}
 	
 	public static Response get(String url){
-		return http("GET", url, null, null);
-	}
-	public static Response get(String url, Map<String,String> headers){
-		return http("GET", url, null, headers);
+		return http("GET", url, null);
 	}
 	
 	public static Response post(String url, String data){
-		return http("POST", url, data, null);
-	}
-	public static Response post(String url, String data, Map<String,String> headers){
-		return http("POST", url, data, headers);
+		return http("POST", url, data);
 	}
 	
-	public static synchronized Response http(String method, String url, String data, Map<String,String> headers){
+	public static synchronized Response http(String method, String url, String data){
 		try {
-//			log.info("Http call '"+method+"' to '"+url+"'"+(null!=data?" (with data length of "+data.length()+" characters)":""));
 			URL obj=new URL(url);
 			HttpURLConnection cnn=(HttpURLConnection)obj.openConnection();
 			cnn.setRequestMethod(method.toUpperCase());
-			
-			if (headers!=null){
-				for(Entry<String, String> e:headers.entrySet()){
-					cnn.setRequestProperty(e.getKey(), e.getValue());
-				}
-			}
 			
 			if ("POST".equalsIgnoreCase(method) && null!=data){
 				cnn.setDoOutput(true);
@@ -65,16 +40,10 @@ public class Http{
 			}
 			
 			Response response=buildResponse(cnn);
-//			log.info("Http call responded with code: "+response.responseCode);
-			
-			
-			log.info("Http call '"+method+"' to '"+url+"'"+(null!=data?" (with data length of "+data.length()+" characters)":"")+" - ResponseCode: "+response.responseCode);
-			
 			cnn.disconnect();
 			return response;
 		}catch(IOException e) {
-			log.error("Failure to make call '"+method+"' to '"+url+"'"+(null!=data?" (with data length of "+data.length()+" characters)":""));
-			log.error("Http library mis-handled the http response most likely - see exception message: "+ e.getMessage());
+			System.err.println("Http library mis-handled the http response most likely - see exception message: "+ e.getMessage());
 			e.printStackTrace();
 			return new Response(504, "Connection Timeout");
 		}

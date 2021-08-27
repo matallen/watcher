@@ -5,9 +5,38 @@
 
 <style>
 #backups{margin:auto;width:95%;}
+
+.label-pill{
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    cursor: default;
+    padding: 0 6px;
+    font-size: 11px;
+    display: inline-block;
+    line-height: 15px;
+    
+    position: relative;
+    top: -3px;
+    
+/*
+    line-height: 20px;
+*/
+    margin: 3px 0 0 3px;
+/*
+    float: left;
+*/
+}
+.label-pill-green{
+		background-color: rgb(127, 226, 152);
+}
+#example tbody tr td a{
+		margin: 0px 10px 0px 0px;
+}
 </style>
 <script>
 var table;
+var xxx=0;
 function loadDataTable(){
   table=$('#example').DataTable( {
         "ajax": {
@@ -27,7 +56,23 @@ function loadDataTable(){
                 return "<input type='checkbox' name='cbx_"+row['name']+"' value='"+row['name']+"'></input>";
             }},
             { "targets": 1, "orderable": true, "render": function (data,type,row){
-                return "<a href='api/download?file="+Utils.getParameterByName("task")+"/"+row['name']+"'>"+row['name']+"</a>";
+            	  
+            	  // strip the [xxx] parts from the filename to become labels, but keep at it for the link
+            	  var filename=row['name'];
+            	  var newFilename=filename.substring(0, filename.lastIndexOf("-[")) + filename.substring(filename.lastIndexOf("]")+1, filename.length);
+            	  var labels=filename.substring(filename.lastIndexOf("[")+1, filename.lastIndexOf("]"));
+            	  var labels2=labels.split(",");
+            	  //console.log("labels="+labels2);
+            	  var labelsHtml="";
+            	  for(i=0;i<=labels2.length;i++){
+            		  if (undefined!=labels2[i])
+            		  	labelsHtml+="<span class='label-pill ng-scope label-pill-green'>"+labels2[i]+"</span>";
+            	  }
+            	  
+                //var labels="<span class='label-pill ng-scope green'>test</span>";
+                return "<a href='api/download?file="+Utils.getParameterByName("task")+"/"+row['name']+"'>"+newFilename+"</a>"+labelsHtml;
+                
+                
             }},
             { "targets": 2, "orderable": true, "render": function (data,type,row){
                 return row['size'];

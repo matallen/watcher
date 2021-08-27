@@ -100,10 +100,10 @@ $(document).ready(function() {
     // onchange handler to set or unset the config option
     $('#alertsEnabled').change(function() {
     	var enabled=$(this).is(':checked');
-    	Http.httpPost("${pageContext.request.contextPath}/api/config/options/slack.webhook.notifications", enabled);
+    	Http.httpPost("${pageContext.request.contextPath}/api/config/options/notifications.enabled", enabled);
     });
     // set the initial value from the server-side config
-    Http.httpGet("${pageContext.request.contextPath}/api/config/options/slack.webhook.notifications", function(response){
+    Http.httpGet("${pageContext.request.contextPath}/api/config/options/notifications.enabled", function(response){
     	$('#alertsEnabled').prop("checked", "true"==response.toLowerCase());
     });
     // popup info handler
