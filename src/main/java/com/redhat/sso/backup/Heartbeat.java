@@ -5,6 +5,8 @@ import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
+import com.redhat.sso.utils.SSLUtilities;
+
 public class Heartbeat {
   private static final Logger log = Logger.getLogger(Heartbeat.class);
   private static Timer t;
@@ -25,6 +27,13 @@ public class Heartbeat {
   public static void start(long intervalInMs) {
     t = new Timer("backup-heartbeat", false);
     t.scheduleAtFixedRate(new HeartbeatRunnable(), startupDelay, intervalInMs);
+    
+    String sslTrustAll=Config.get().getOptions().get("ssl.certs.trustall");
+    if ("true".equalsIgnoreCase(sslTrustAll)){
+    	log.debug("Trusting all hostnames & SSL certs");
+//    SSLUtilities.trustAllHostnames();
+    	SSLUtilities.trustAllHttpsCertificates();
+    }
   }
 
   public static void stop() {
