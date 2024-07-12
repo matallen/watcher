@@ -22,12 +22,12 @@ public class InitServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     
-    long pingIntervalInMs=3600l;
-    if (null!=Config.get().getOptions().get("pingIntervalInMinutes"))
-    	pingIntervalInMs=TimeUnit.MINUTES.toMillis(Long.parseLong(Config.get().getOptions().get("pingIntervalInMinutes")));
-    
-    log.debug("Starting PingSelf with delay ("+PingSelf.startupDelay+") and interval ("+pingIntervalInMs+"ms)");
-    PingSelf.start(pingIntervalInMs);
+//    long pingIntervalInMs=3600l;
+//    if (null!=Config.get().getOptions().get("pingIntervalInMinutes"))
+//    	pingIntervalInMs=TimeUnit.MINUTES.toMillis(Long.parseLong(Config.get().getOptions().get("pingIntervalInMinutes")));
+//    
+//    log.debug("Starting PingSelf with delay ("+PingSelf.startupDelay+") and interval ("+pingIntervalInMs+"ms)");
+//    PingSelf.start(pingIntervalInMs);
  		
  		long intervalInHours=Long.parseLong(Config.get().getOptions().get("intervalInHours"));
  		log.debug("Starting Heartbeat with delay ("+Heartbeat.startupDelay+") and interval ("+intervalInHours+"h)");
