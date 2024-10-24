@@ -1,21 +1,20 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: watcher2
+  name: watcher
   namespace: customer-success-portfolio-hub--prod
   labels:
-    app: watcher2
-    app.openshift.io/runtime-version: java:openjdk-11-el7
+    app: watcher
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: watcher2
+      app: watcher
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: watcher2
+        app: watcher
     spec:
       volumes:
         - name: watcher-storage

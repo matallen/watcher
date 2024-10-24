@@ -12,7 +12,7 @@ metadata:
     app.openshift.io/runtime: java
     shard: internal
 spec:
-  host: watcher.apps.int.spoke.preprod.us-east-1.aws.paas.redhat.com/
+  host: watcher.apps.int.spoke.prod.us-east-1.aws.paas.redhat.com
   to:
     kind: Service
     name: watcher
