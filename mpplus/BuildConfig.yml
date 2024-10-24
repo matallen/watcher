@@ -29,7 +29,7 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/matallen/watcher.git'
-      ref: dev
+      ref: master
     
     sourceSecret:
       name: gitlab-mallen

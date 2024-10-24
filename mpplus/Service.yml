@@ -6,7 +6,7 @@ metadata:
   labels:
     app: watcher2
   annotations:
-    app.openshift.io/vcs-ref: dev
+    app.openshift.io/vcs-ref: master
     app.openshift.io/vcs-uri: https://gitlab.consulting.redhat.com/mallen/watcher.git
 spec:
   ports:
