@@ -1,0 +1,43 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: watcher2
+  namespace: customer-success-portfolio-hub--preprod
+  labels:
+    app: watcher2
+    paas.redhat.com/appcode: PDIS-001
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: DockerImage
+      name: 'images.paas.redhat.com/services-portfolio/watcher:latest'
+    pushSecret:
+      name: services-portfolio-portfoliohubpublisher-pull-secret
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'java:openjdk-11-el7'
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/matallen/watcher.git'
+      ref: dev
+    
+    sourceSecret:
+      name: gitlab-mallen
+  triggers:
+    - type: ImageChange
+    - type: ConfigChange
+    - type: GitLab
+      gitlab:
+        secretReference:
+          name: gitlab-mallen
+  runPolicy: Serial

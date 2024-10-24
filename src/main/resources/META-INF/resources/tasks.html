@@ -1,10 +1,5 @@
-<%@page import="
-java.util.Date,
-java.util.Calendar,
-java.util.Map
-"%>
 
-<%@include file="header.jsp"%>
+<!--HEADER_TEMPLATE-->
 
 <script src="js/http.js"></script>
 <link href="css/slide-switch.css" rel="stylesheet">
@@ -37,7 +32,7 @@ var taskInfo=[];
 function loadDataTable(){
   $('#example').DataTable( {
         "ajax": {
-            "url": '${pageContext.request.contextPath}/api/tasks',
+            "url": '/api/tasks',
             "dataSrc": ""
         },
         "scrollY":        "1300px",
@@ -58,9 +53,9 @@ function loadDataTable(){
             	taskInfo[row['name']]['backup']=row['backup'];
             	// add the button to show the info when clicked on
             	var info="&nbsp;<a href='#' id='myBtn' onclick=\"showInfo2('"+row['name']+"')\"><img class='info-img' src='images/info2-512.png'/></a>";
-            	console.log("backup="+row['backup']);
+            	//console.log("backup="+row['backup']);
             	if (null!= row['backup'] && "true"==row['backup'].toLowerCase()){
-	            	return "<a href='backups.jsp?task="+row['name']+"'>"+row['name']+"</a>"+info;
+	            	return "<a href='backups?task="+row['name']+"'>"+row['name']+"</a>"+info;
             	}else{
             		return row['name']+info;
             	}
@@ -92,11 +87,11 @@ function loadDataTable(){
 
 function toggleTask(o, name){
 	var enabled=o.checked;
-	Http.httpPost("${pageContext.request.contextPath}/api/tasks/"+name+"/enabled/"+enabled, null);
+	Http.httpPost("/api/tasks/"+name+"/enabled/"+enabled, null);
 }
 var healthBlockSize;
 $(document).ready(function() {
-    Http.httpGet("${pageContext.request.contextPath}/api/config/options/health.block.size", function(response){
+    Http.httpGet("/api/config/options/health.block.size", function(response){
 	    healthBlockSize=response;
 	    var healthSizeCss=".health{width:"+(400/parseInt(healthBlockSize))+"px;}";
 	    console.log("healthSizeCss="+healthSizeCss);
@@ -108,10 +103,10 @@ $(document).ready(function() {
     // onchange handler to set or unset the config option
     $('#alertsEnabled').change(function() {
     	var enabled=$(this).is(':checked');
-    	Http.httpPost("${pageContext.request.contextPath}/api/config/options/notifications.enabled", enabled);
+    	Http.httpPost("/api/config/options/notifications.enabled", enabled);
     });
     // set the initial value from the server-side config
-    Http.httpGet("${pageContext.request.contextPath}/api/config/options/notifications.enabled", function(response){
+    Http.httpGet("/api/config/options/notifications.enabled", function(response){
     	$('#alertsEnabled').prop("checked", "true"==response.toLowerCase());
     });
     
@@ -145,7 +140,7 @@ function showInfo2(taskName){
 function urlify(text) {
 	var urlRegex = /(http.+[^\s])/g;
 	return text.replace(urlRegex, function(url) {
-       //return '<a href="${pageContext.request.contextPath}/api/download?file=' + url + '">' + url + '</a>';
+       //return '<a href="/api/download?file=' + url + '">' + url + '</a>';
        console.log("url="+url);
 		return '<a href="'+url+'">'+url+'</a>';
    })
@@ -153,11 +148,11 @@ function urlify(text) {
 
 //function backupNow(taskName){
 //	console.log("BackupNow:: "+taskName);
-//	Http.httpPost("${pageContext.request.contextPath}/api/tasks/"+taskName+"/backupNow", null);
+//	Http.httpPost("/api/tasks/"+taskName+"/backupNow", null);
 //}
 </script>
   
-    <%@include file="nav.jsp"%>
+    <!--NAV_TEMPLATE-->
     
     <div id="tasks">
         <div id="buttonbar" style="width:80%;position:relative;top:25px;z-index:1">

@@ -15,10 +15,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 public class Cleanup{
-	private static final Logger log = Logger.getLogger(Backup.class);
+  private static final Logger log=MyLoggerFactory.getLogger(Cleanup.class);
 	static SimpleDateFormat sdf=Backup.sdf;
 	static final String DEFAULT_AUTO_DELETE="3 months";
 	

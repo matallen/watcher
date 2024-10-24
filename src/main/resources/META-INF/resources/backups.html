@@ -1,6 +1,5 @@
-<%@page %>
+<!--HEADER_TEMPLATE-->
 
-<%@include file="header.jsp"%>
 <script src="js/http.js"></script>
 
 <style>
@@ -40,7 +39,7 @@ var xxx=0;
 function loadDataTable(){
   table=$('#example').DataTable( {
         "ajax": {
-            "url": '${pageContext.request.contextPath}/api/backups/'+Utils.getParameterByName("task"),
+            "url": '/api/backups/'+Utils.getParameterByName("task"),
             "dataSrc": ""
         },
         "scrollY":        "1300px",
@@ -94,7 +93,7 @@ $(document).ready(function() {
 });
 function backupNow(taskName){
 	console.log("BackupNow:: "+taskName);
-	Http.httpPost("${pageContext.request.contextPath}/api/tasks/"+taskName+"/backupNow", null, function(response){
+	Http.httpPost("/api/tasks/"+taskName+"/backupNow", null, function(response){
 		//console.log("XXX status="+response.status);
 		table.ajax.reload();
 	});
@@ -106,9 +105,11 @@ function selectAll(caller){
 }
 function deleteAll(taskName){
 	var list=[],i=0;
+  
 	$('input[name^="cbx_"]:checked').each(function(idx, cbx){
 		list[i++]=cbx.value;//=caller.checked;
-		Http.httpDelete("${pageContext.request.contextPath}/api/tasks/"+taskName+"/backups/"+cbx.value+"/delete", function(){
+    Http.httpDelete("/api/tasks/"+encodeURIComponent(taskName)+"/backups/"+encodeURIComponent(cbx.value)+"/delete", function(){
+    //Http.httpDelete("/api/tasks/"+encodeURIComponent(taskName)+"/backups/"+cbx.value+"/delete", function(){
 			console.log("delete sent for: "+cbx.value);
 		});
 	});
@@ -117,7 +118,7 @@ function deleteAll(taskName){
 }
 </script>
   
-    <%@include file="nav.jsp"%>
+    <!--NAV_TEMPLATE-->
     
     <input type="button" onclick="return backupNow(Utils.getParameterByName('task'))" value="Backup Now"/>
     <input type="button" onclick="return deleteAll(Utils.getParameterByName('task'));" value="Delete"/>

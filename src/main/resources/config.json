@@ -1,42 +1,38 @@
 {
-	"list": [
-	
-			{
-			"name": "Portfolio Dashboard - Search (Ping)",
-			"url": "https://dashboard-portfolio-hub.6923.rh-us-east-1.openshiftapps.com/dashboard/search.jsp",
-			"info-sourceUrl": "https://gitlab.consulting.redhat.com/mallen/portfolio-dashboard",
-			"info-hostedUrl": "",
-			"backupIntervalInMinutes": "1440",
-			"pingIntervalInMinutes": "5",
-			"backup": "false",
-			"enabled": "true"
-		},
-		{
-			"name": "Portfolio Dashboard - Metrics (Backup)",
-			"url": "http://metrics-portfolio-hub.int.open.paas.redhat.com/metrics/get",
-			"info-sourceUrl": "https://gitlab.consulting.redhat.com/mallen/portfolio-metrics",
-			"info-hostedUrl": "",
-			"backupIntervalInMinutes": "1440",
-			"pingIntervalInMinutes": "1",
-			"backup": "true",
-			"enabled": "true"
-		}
-	],
+  "list" : [ {
+    "name" : "Portfolio Dash",
+    "url" : "https://dashboard-portfolio-hub.6923.rh-us-east-1.openshiftapps.com/dashboard/search.jsp",
+    "info-sourceUrl" : "https://gitlab.consulting.redhat.com/mallen/portfolio-dashboard",
+    "info-hostedUrl" : "",
+    "pingInterval" : "1m",
+    "backup" : "true",
+    "enabled" : "true"
+  }, {
+    "name" : "Portfolio Hub",
+    "url" : "https://portfoliohub.redhat.com/v3/search-kits",
+    "info-sourceUrl" : "https://portfoliohub.redhat.com",
+    "info-hostedUrl" : "",
+    "pingInterval" : "1m",
+    "backup" : "false",
+    "enabled" : "true"
+  } ],
 	"options": {
-		"intervalInHours": "23", 
-		"pingIntervalInMinutes": "5",
+    "backupInterval": "1d",
+    "auto.delete.older.than":"3 months",
+    "LOG_TO_SYSOUT": "false",
+    "health.block.size": "20",
 		"format": "yyyy-MM-dd'T'HHmmss",
 		"maxEvents": "10000",
 		"notifications.enabled": "false",
-		"slack.webhook.notifications": "false",
-		"slack.webhook.template": "payload={\"username\": \"webhookbot\", \"text\": \"`SERVER_NAME` is *DOWN!* - <http://data-backup-data-backup.int.open.paas.redhat.com/http-backup|Watcher>\", \"icon_emoji\": \":ghost:\"}",
-		"slack.webhook.urls": "https://hooks.slack.com/services/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",
-		"googlehangoutschat.webhook.template": "{'text':'TASK_NAME is DOWN! returned RESPONSE_CODE! - <http://watcher-monitoring.int.open.paas.redhat.com/watcher|Watcher>'}"
+    "ssl.certs.trustall": "true",
+    "xslack.webhook.template": "payload={\"username\": \"webhookbot\", \"app\":\"TASK_NAME\", \"text\": \"`SERVER_NAME` is *DOWN!* - <https://watcher.apps.int.spoke.preprod.us-east-1.aws.paas.redhat.com/watcher|Watcher>\", \"icon_emoji\": \":ghost:\"}",
+    "slack.webhook.template": "{\"app\":\"TASK_NAME\", \"text\": \"`TASK_NAME` is *DOWN!*. Response code: RESPONSE_CODE. <https://watcher.apps.int.spoke.preprod.us-east-1.aws.paas.redhat.com/watcher|Watcher>\", \"icon_emoji\": \":ghost:\"}",
+		"googlechat.webhook.template": "{'text':'TASK_NAME is DOWN! returned RESPONSE_CODE! - <https://watcher.apps.int.spoke.preprod.us-east-1.aws.paas.redhat.com/watcher|Watcher>'}"
 	},
 	"values": {},
 	"notifications":[
 		{
-			"channel":"google chat webhook url here",
+			"channel":"https://xhooks.slack.com/triggers/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",
 			"events": "onHttpFailure,onError",
 			"enabled": "true"
 		}

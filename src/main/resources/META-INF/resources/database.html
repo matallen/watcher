@@ -1,9 +1,4 @@
-<%@page import="
-java.util.Date,
-java.util.Calendar
-"%>
-
-<%@include file="header.jsp"%>
+<!--HEADER_TEMPLATE-->
 
 <script>
 
@@ -16,7 +11,7 @@ function save(){
 
 function post(uri, data){
   var xhr = new XMLHttpRequest();
-  var ctx = "${pageContext.request.contextPath}";
+  var ctx = "";
   var url=ctx+"/api"+uri;
   xhr.open("POST", url, true);
   if (data != undefined){
@@ -35,7 +30,7 @@ $(document).ready(function() {
 
 function load(){
   var xhr = new XMLHttpRequest();
-  var ctx = "${pageContext.request.contextPath}";
+  var ctx = "";
   xhr.open("GET", ctx+"/api/database", true);
   xhr.send();
   xhr.onloadend = function () {
@@ -63,7 +58,7 @@ function showSuccess(){
 		}
 	</style>
 		
-  <%@include file="nav.jsp"%>
+  <!--NAV_TEMPLATE-->
   
 	<div class="alert alert-success" id="success-alert">
     <button type="button" class="close" data-dismiss="alert">x</button>

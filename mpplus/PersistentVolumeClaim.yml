@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: watcher-storage
+  namespace: customer-success-portfolio-hub--prod
+  labels:
+    paas.redhat.com/appcode: PDIS-001
+  annotations:
+    kubernetes.io/reclaimPolicy: Delete
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: aws-efs-tier-c3

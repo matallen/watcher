@@ -8,10 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DownloadFile{
-  private Logger log=Logger.getLogger(this.getClass());
+  private static final Logger log = LoggerFactory.getLogger(DownloadFile.class);
   
   public static void main(String[] asd) throws IOException{
     String remoteLocation="http://localhost:8082/community-ninja-board/api/script/github-stats.py -s ABCDEF";

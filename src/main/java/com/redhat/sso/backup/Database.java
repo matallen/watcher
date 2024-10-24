@@ -12,16 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.redhat.sso.utils.IOUtils2;
 import com.redhat.sso.utils.Json;
 
 public class Database{
-  private static final Logger log=Logger.getLogger(Database.class);
+  private static final Logger log=MyLoggerFactory.getLogger(Database.class);
 //  public static final String STORAGE="target/ninja-persistence/";
 //  public static final File STORAGE_AS_FILE=new File(STORAGE);
   public static final File STORAGE=new File(Config.STORAGE_ROOT, "database.json");
@@ -63,10 +62,7 @@ public class Database{
       	STORAGE.getParentFile().mkdirs();
       IOUtils2.writeAndClose(Json.newObjectMapper(true).writeValueAsBytes(this), new FileOutputStream(STORAGE));
       log.trace("Database saved ("+(System.currentTimeMillis()-s)+"ms)");
-    }catch (JsonGenerationException e){
-      e.printStackTrace();
-    }catch (JsonMappingException e){
-      e.printStackTrace();
+//      log.info("database = "+Json.toJson(this));
     }catch (FileNotFoundException e){
       e.printStackTrace();
     }catch (IOException e){
@@ -78,10 +74,6 @@ public class Database{
     try{
       Database db=Json.newObjectMapper(true).readValue(IOUtils2.toStringAndClose(new FileInputStream(STORAGE)), Database.class);
       return db;
-    }catch (JsonParseException e){
-      e.printStackTrace();
-    }catch (JsonMappingException e){
-      e.printStackTrace();
     }catch (FileNotFoundException e){
       e.printStackTrace();
     }catch (IOException e){
@@ -98,6 +90,7 @@ public class Database{
     return instance;
   }
   public static Database get(){
+    if (instance!=null) return instance;
     if (!STORAGE.exists())
       new Database().save();
     instance=Database.load();

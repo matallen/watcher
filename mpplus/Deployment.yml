@@ -1,0 +1,55 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: watcher2
+  namespace: customer-success-portfolio-hub--prod
+  labels:
+    app: watcher2
+    app.openshift.io/runtime-version: java:openjdk-11-el7
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watcher2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: watcher2
+    spec:
+      volumes:
+        - name: watcher-storage
+          persistentVolumeClaim:
+            claimName: watcher-storage
+      containers:
+        - name: watcher
+          image: 'images.paas.redhat.com/services-portfolio/watcher:latest'
+          env:
+            - name: GD_CREDENTIALS
+              value: "{\"access_token\": \"ya29.GlxsB54BamYjni1ZZGLfOW2MhlOQuJA2Mh4sEMHWaUYJNntKiYL6v42ivmP9EXInBetcaTltbbjcsqOLLuT8jA0ucBUBEmYNahCdqanPtLGIYKjueuSBCmAz2yakzA\", \"token_type\": \"Bearer\", \"refresh_token\": \"1/dktL5rchPlNJlY7CezrMp3cBt4k6j8Tx_5NLGmkA8D5yO1KqDR0_gWOTosp3H-wx\", \"expiry\": \"2019-08-22T13:48:25.666651305-05:00\"}"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+            - containerPort: 8778
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - name: watcher-storage
+              mountPath: /deployments/persistence
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

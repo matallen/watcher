@@ -1,0 +1,25 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: watcher
+  namespace: customer-success-portfolio-hub--prod
+  labels:
+    app: recommender
+    app.kubernetes.io/component: watcher
+    app.kubernetes.io/instance: watcher
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: watcher
+    app.openshift.io/runtime: java
+    shard: internal
+spec:
+  host: watcher.apps.int.spoke.preprod.us-east-1.aws.paas.redhat.com/
+  to:
+    kind: Service
+    name: watcher
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
+  wildcardPolicy: None

@@ -1,0 +1,33 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: watcher2
+  namespace: customer-success-portfolio-hub--prod
+  labels:
+    app: watcher2
+  annotations:
+    app.openshift.io/vcs-ref: dev
+    app.openshift.io/vcs-uri: https://gitlab.consulting.redhat.com/mallen/watcher.git
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: 8443-tcp
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+    - name: 8778-tcp
+      protocol: TCP
+      port: 8778
+      targetPort: 8778
+  selector:
+    app: watcher2
+  type: ClusterIP
+  sessionAffinity: None
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+status:
+  loadBalancer: {}

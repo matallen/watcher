@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 
+import org.slf4j.Logger;
 import com.redhat.sso.utils.DownloadFile;
 
 public class Backup {
-  private static final Logger log = Logger.getLogger(Backup.class);
+  private static final Logger log=MyLoggerFactory.getLogger(Backup.class);
   static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
   
   public void run(String taskToBackup) {
@@ -39,11 +39,13 @@ public class Backup {
     			new DownloadFile().get(remoteLocation, localDestination, PosixFilePermission.GROUP_READ);
     			
     			db.addEvent("Backup SUCCESS", (String)destination.get("name") +" @ "+ (String)destination.get("url") +" -> "+ newName);
+    			log.debug("Backup success - "+taskToBackup);
 //          System.out.println("Copying from ["+source.getAbsolutePath()+"] to ["+newFile.getAbsolutePath()+"]");
 //          IOUtils.copy(new FileInputStream(source), new FileOutputStream(newFile));
     		}catch(Exception e){
     			db.addEvent("Backup ERROR", (String)destination.get("name") +" @ "+ (String)destination.get("url") +" -> ErrorMessage: "+e.getMessage());
-    			e.printStackTrace();
+//    			e.printStackTrace();
+    			log.debug("Backup failure - "+taskToBackup+" - "+e.getMessage());
     		}
     	}
       
