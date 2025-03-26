@@ -36,9 +36,9 @@ public class AlertChat{
 							String r=Http.post(channel, alertPayload, new MapBuilder<String, String>().put("Content-Type", "application/json; charset=UTF-8").build());
 							System.out.println("Sent '"+alertPayload+"' to chat api. response.code=200");
 						}catch(HttpException e){
-							System.out.println("Sent '"+alertPayload+"' to chat api but hit an error: response.code="+e.getStatusCode());
+							System.out.println("Sent '"+alertPayload+"' to ["+channel+"] but hit an error: response.code="+e.getStatusCode());
 						}catch(IOException e){
-							System.out.println("Sent '"+alertPayload+"' to chat api but hit an error: "+ e.getMessage());
+							System.out.println("Sent '"+alertPayload+"' to ["+channel+"] but hit an error: "+ e.getMessage());
 						}
 					}
 				}
